@@ -1713,18 +1713,25 @@
         <h1 class="reveal glow-pulse" style="font-family:'Frank Ruhl Libre',serif;font-size:clamp(2.2rem,4.8vw,4rem);font-weight:900;background:linear-gradient(135deg,#d4a017,#ffd700,#f5e6c8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.25rem;">
             מזל טוב מוטי וברכה!
         </h1>
-        <p class="reveal" style="font-size:clamp(1rem,2vw,1.45rem);color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;">
+        <p class="reveal" style="font-size:clamp(1rem,2vw,1.45rem);color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.65rem;">
             חמישים שנה של אהבה, משפחה וזיכרונות יפים
-        </p>        <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;background:rgba(212,160,23,0.1);border:1.5px solid rgba(212,160,23,0.3);border-radius:14px;padding:10px 14px;margin:0.4rem auto 0.8rem;max-width:560px;">
-            <button id="finalSongToggle" class="nav-slide-btn" onclick="toggleFinalSong()" aria-label="נגן או השהה את השיר">⏸ השהה</button>
-            <button class="nav-slide-btn secondary" onclick="restartFinalSong()" aria-label="התחל את השיר מהתחלה">↺ מהתחלה</button>
-            <label for="finalSongVolume" style="display:flex;align-items:center;gap:8px;color:#ffd700;font-size:0.9rem;font-weight:800;">
-                עוצמה
-                <input id="finalSongVolume" type="range" min="0" max="1" step="0.05" value="1" oninput="setFinalSongVolume(this.value)" style="width:120px;accent-color:#ffd700;">
-            </label>
+        </p>
+        <div style="display:flex;gap:16px;justify-content:center;margin:0.3rem auto 0.8rem;flex-wrap:wrap;" class="reveal">
+            <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
+                <div style="font-size:1.8rem;">💕</div>
+                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">מוטי</div>
+            </div>
+            <div style="display:flex;align-items:center;font-size:2rem;">❤️</div>
+            <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
+                <div style="font-size:1.8rem;">💕</div>
+                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">ברכה</div>
+            </div>
         </div>
-        <div class="reveal" style="background:rgba(212,160,23,0.1);border:2px solid rgba(212,160,23,0.3);border-radius:16px;padding:1rem 1.4rem;margin:0.7rem auto;max-width:760px;text-align:right;max-height:54vh;overflow-y:auto;box-shadow:0 0 28px rgba(212,160,23,0.12);">
-            <div style="font-family:'Frank Ruhl Libre',serif;color:#fdf6e3;line-height:1.85;font-size:clamp(0.95rem,1.8vw,1.18rem);white-space:pre-line;">
+        <div class="reveal" style="background:rgba(212,160,23,0.1);border:2px solid rgba(212,160,23,0.3);border-radius:16px;margin:0.7rem auto;max-width:760px;text-align:right;box-shadow:0 0 28px rgba(212,160,23,0.12);overflow:hidden;">
+            <button id="finalLyricsToggle" onclick="toggleFinalLyrics()" class="nav-slide-btn secondary" style="width:100%;justify-content:center;margin:0;border-radius:0;background:rgba(212,160,23,0.16);border:none;border-bottom:1.5px solid rgba(212,160,23,0.3);" aria-expanded="false">▾ הצג מילים</button>
+            <div id="finalLyricsBox" style="padding:0 1.4rem;max-height:0px;overflow-y:auto;transition:max-height 0.25s ease,padding 0.25s ease;">
+                <div style="font-family:'Frank Ruhl Libre',serif;color:#fdf6e3;line-height:1.85;font-size:clamp(0.95rem,1.8vw,1.18rem);white-space:pre-line;">
+
 <span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0;">בית 1</span>
 בַּקַּיִץ שֶׁל שִׁבְעִים וָשֵׁשׁ הִתְחִיל הַסִּפּוּר,
 שְׁנֵי לְבָבוֹת מָצְאוּ אֶת הָאוֹר.
@@ -1790,23 +1797,21 @@
 מָצָא אַהֲבָה...
 וַחֲמִשִּׁים שָׁנָה אַחַר כָּךְ,
 כֻּלָּנוּ שָׁרִים לָכֶם בְּאַהֲבָה.
+                </div>
             </div>
         </div>
-        <div style="display:flex;gap:16px;justify-content:center;margin-top:1rem;flex-wrap:wrap;" class="reveal">
-            <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
-                <div style="font-size:1.8rem;">💕</div>
-                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">מוטי</div>
-            </div>
-            <div style="display:flex;align-items:center;font-size:2rem;">❤️</div>
-            <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
-                <div style="font-size:1.8rem;">💕</div>
-                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">ברכה</div>
-            </div>
-        </div>
-        <div style="margin-top:1rem;" class="reveal">
+        <div id="finalSongControls" class="reveal" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;background:rgba(26,18,0,0.62);border:1.5px solid rgba(212,160,23,0.35);border-radius:16px;padding:10px 14px;margin:0.8rem auto 0;max-width:580px;backdrop-filter:blur(8px);box-shadow:0 0 24px rgba(0,0,0,0.22);">
+            <button id="finalSongToggle" class="nav-slide-btn" onclick="toggleFinalSong()" aria-label="נגן או השהה את השיר">⏸ השהה</button>
+            <button class="nav-slide-btn secondary" onclick="restartFinalSong()" aria-label="התחל את השיר מהתחלה">↺ מהתחלה</button>
+            <label for="finalSongVolume" style="display:flex;align-items:center;gap:8px;color:#ffd700;font-size:0.9rem;font-weight:800;">
+                עוצמה
+                <input id="finalSongVolume" type="range" min="0" max="1" step="0.05" value="1" oninput="setFinalSongVolume(this.value)" style="width:120px;accent-color:#ffd700;">
+            </label>
+        </div>        <div style="margin-top:1rem;" class="reveal">
             <button class="nav-slide-btn secondary" onclick="goToSlide(1)">🏠 חזרה לפתיחה</button>
         </div>
     </div>
+
 </div>
 
 <!-- Reset Confirmation Modal -->
@@ -1935,6 +1940,7 @@
         current = n; updateNav();
         if(n === finaleSlide) showWinner();
         handleFinalSong(n);
+        updateRulesButtonVisibility(n);
     }
 
     const finalSongSlide = 45;
@@ -1992,6 +1998,22 @@
         const song = document.getElementById('finalSong');
         if (!song) return;
         song.volume = Number(value);
+    }
+    function toggleFinalLyrics() {
+        const box = document.getElementById('finalLyricsBox');
+        const toggle = document.getElementById('finalLyricsToggle');
+        if (!box || !toggle) return;
+        const isClosed = box.style.maxHeight === '0px';
+        box.style.maxHeight = isClosed ? '43vh' : '0px';
+        box.style.padding = isClosed ? '1rem 1.4rem' : '0 1.4rem';
+        toggle.textContent = isClosed ? '▴ הסתר מילים' : '▾ הצג מילים';
+        toggle.setAttribute('aria-expanded', String(isClosed));
+    }
+
+    function updateRulesButtonVisibility(slideNumber) {
+        const rulesButton = document.getElementById('rules-btn-global');
+        if (!rulesButton) return;
+        rulesButton.style.display = slideNumber === finalSongSlide ? 'none' : '';
     }
     const finaleSlide = 44;
 
@@ -2237,7 +2259,9 @@ window._rulesReturnSlide = 1;
 function openRules() {
     var currentSlide = document.querySelector('.slide.active');
     var slideNum = currentSlide ? parseInt(currentSlide.getAttribute('data-slide')) : 1;
-    window._rulesReturnSlide = slideNum;
+    if (slideNum !== 46) {
+        window._rulesReturnSlide = slideNum;
+    }
     goToSlide(46);
 }
 
