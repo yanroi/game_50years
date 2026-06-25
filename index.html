@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>חמישים שנות אהבה – משחק חידות משפחתי</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #1a1200;
+            --color-bg-deep: #0d0900;
+            --color-surface: #2a1f00;
+            --color-text: #fdf6e3;
+            --color-text-secondary: #e8d5a3;
+            --color-text-muted: #b8962e;
+            --color-accent-1: #d4a017;
+            --color-accent-2: #f5e6c8;
+            --color-accent-3: #8b6914;
+            --color-gold-light: #ffd700;
+            --color-cream: #fdf6e3;
+            --color-warm-brown: #5c3d11;
+            --color-glass-bg: rgba(212,160,23,0.08);
+            --color-glass-border: rgba(212,160,23,0.25);
+            --color-vignette: rgba(0,0,0,0.55);
+            --font-display: 'Frank Ruhl Libre', serif;
+            --font-body: 'Heebo', sans-serif;
+        }
+    </style>
+    <style>
+        :root {
+            --color-bg: #1a1200;
+            --color-text: #fdf6e3;
+            --glow-color-rgb: 212,160,23;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { background: var(--color-bg); margin: 0; direction: rtl; }
+        body { font-family: 'Heebo', sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+        .deck { width: 100vw; height: 100vh; position: relative; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; opacity: 0; transform: scale(0.95); transition: opacity 0.7s ease, transform 0.7s ease; pointer-events: none; overflow-y: auto; overflow-x: hidden; padding-top: clamp(1rem, 3vh, 3rem); padding-bottom: clamp(2rem, 5vh, 4rem); box-sizing: border-box; }
+        .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1200px; padding: clamp(1rem, 3vw, 3rem); }
+        .nav-controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; z-index: 100; background: rgba(212,160,23,0.12); backdrop-filter: blur(10px); padding: 8px 20px; border-radius: 40px; border: 1px solid rgba(212,160,23,0.3); }
+        .nav-btn { width: 38px; height: 38px; border: none; background: rgba(212,160,23,0.15); color: #d4a017; border-radius: 50%; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+        .nav-btn:hover { background: rgba(212,160,23,0.3); }
+        .slide-dots { display: flex; gap: 6px; flex-wrap: wrap; max-width: 400px; justify-content: center; }
+        .slide-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(212,160,23,0.25); cursor: pointer; transition: background 0.3s, transform 0.3s; }
+        .slide-dots .dot.active { background: #d4a017; transform: scale(1.4); }
+        .slide-counter { font-size: 0.75rem; color: #b8962e; min-width: 44px; text-align: center; font-family: 'Heebo', sans-serif; }
+        .reveal { opacity: 0; transform: translateY(18px); }
+
+        @keyframes float-slow { 0%{transform:translate(0,0) scale(1)} 33%{transform:translate(50px,-40px) scale(1.1)} 66%{transform:translate(-30px,30px) scale(0.92)} 100%{transform:translate(0,0) scale(1)} }
+        @keyframes float-drift { 0%{transform:translate(0,0) rotate(0deg)} 33%{transform:translate(-45px,-55px) rotate(3deg)} 66%{transform:translate(35px,25px) rotate(-2deg)} 100%{transform:translate(0,0) rotate(0deg)} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+        @keyframes shimmer { 0%,100%{opacity:0.7} 50%{opacity:1} }
+        @keyframes glow-pulse { 0%,100%{text-shadow:0 0 20px rgba(212,160,23,0.6),0 0 40px rgba(212,160,23,0.2)} 50%{text-shadow:0 0 35px rgba(212,160,23,0.9),0 0 70px rgba(212,160,23,0.4)} }
+        @keyframes ring-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        @keyframes heart-beat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+
+        .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); animation: float-slow 12s ease-in-out infinite; }
+        .blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+        .blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+
+        .slide::before { content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/SVG%3E");
+            background-size:256px 256px; opacity:0.035; mix-blend-mode:overlay; }
+        .slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+            background:radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.55) 100%); }
+
+        .text-glow { text-shadow: 0 0 20px rgba(212,160,23,0.6), 0 0 40px rgba(212,160,23,0.2); }
+        .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+        /* ─── GAME BOARD ─── */
+        .game-board { width: 100%; border-collapse: separate; border-spacing: 6px; }
+        .cat-header { background: linear-gradient(135deg, #6b4a00, #c8850a, #ffd700); color: #fff;
+            font-family:'Frank Ruhl Libre',serif; font-weight:900; font-size:clamp(0.95rem,1.8vw,1.35rem);
+            text-align:center; padding: 14px 8px; border-radius: 8px;
+            border: 2px solid rgba(255,215,0,0.8);
+            text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.7);
+            letter-spacing: 0.03em; cursor: default; }
+        .score-cell { background: linear-gradient(135deg, #0d1a3a, #1a2d5a);
+            color: #ffd700; font-family:'Frank Ruhl Libre',serif; font-weight:900;
+            font-size:clamp(1rem,2.2vw,1.8rem); text-align:center; padding: 12px 6px;
+            border-radius: 8px; border: 2px solid rgba(212,160,23,0.4);
+            cursor: pointer; transition: all 0.25s ease; text-shadow: 0 0 12px rgba(255,215,0,0.5); }
+        .score-cell:hover { background: linear-gradient(135deg, #1a2d5a, #2a4080);
+            border-color: #ffd700; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255,215,0,0.3); }
+        .score-cell.used { background: rgba(255,255,255,0.04); color: rgba(255,215,0,0.15);
+            border-color: rgba(212,160,23,0.1); cursor: default; transform: none; box-shadow: none; }
+
+        /* ─── QUESTION SLIDES ─── */
+        .question-card { background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(212,160,23,0.03));
+            border: 2px solid rgba(212,160,23,0.35); border-radius: 20px; padding: clamp(1.5rem,3vw,3rem);
+            text-align:center; }
+        .answer-card { background: linear-gradient(135deg, rgba(34,80,20,0.18), rgba(34,80,20,0.08));
+            border: 2px solid rgba(100,200,80,0.35); border-radius: 20px; padding: clamp(1.5rem,3vw,3rem);
+            text-align:center; }
+        .badge-category { display:inline-block; background: linear-gradient(90deg,#8b6914,#d4a017);
+            color:#fdf6e3; padding:4px 18px; border-radius:20px; font-size:0.8rem; font-weight:700;
+            margin-bottom:1rem; letter-spacing:1px; }
+        .badge-score { display:inline-block; background:rgba(255,215,0,0.12); border:1px solid rgba(255,215,0,0.4);
+            color:#ffd700; padding:4px 16px; border-radius:20px; font-size:0.85rem; font-weight:700;
+            margin-bottom:1rem; letter-spacing:1px; margin-right:8px; }
+        .mc-option { background:rgba(212,160,23,0.08); border:1.5px solid rgba(212,160,23,0.25);
+            border-radius:12px; padding:10px 18px; margin:6px auto; cursor:pointer; transition:all 0.2s;
+            text-align:right; max-width:600px; display:block; font-size:0.95rem; width:100%; }
+        .mc-option:hover { background:rgba(212,160,23,0.2); border-color:#d4a017; }
+        .mc-option.selected { background:rgba(212,160,23,0.35); border-color:#ffd700; border-width:2px;
+            color:#ffd700; font-weight:800; box-shadow:0 0 14px rgba(212,160,23,0.35); }
+        .placeholder { background: rgba(255,255,255,0.06); border: 2px dashed rgba(212,160,23,0.4);
+            border-radius: 12px; padding: 12px 20px; margin: 8px auto; color: #b8962e;
+            font-style: italic; font-size: 0.9rem; text-align:center; }
+        .nav-slide-btn { display:inline-flex; align-items:center; gap:8px;
+            background:linear-gradient(135deg,#8b6914,#d4a017); color:#0d0900;
+            padding:10px 24px; border-radius:30px; font-weight:800; font-size:0.9rem;
+            cursor:pointer; border:none; margin:6px; transition:all 0.2s; }
+        .nav-slide-btn:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(212,160,23,0.4); }
+        .nav-slide-btn.secondary { background:rgba(212,160,23,0.12); color:#ffd700; border:1.5px solid rgba(212,160,23,0.4); }
+
+        /* ─── SCORE BOARD ─── */
+        .team-card { background:linear-gradient(135deg,rgba(212,160,23,0.1),rgba(212,160,23,0.04));
+            border:2px solid rgba(212,160,23,0.3); border-radius:20px; padding:2rem 2.5rem; text-align:center; }
+        .team-score { font-size:clamp(2.5rem,5vw,4.5rem); font-weight:900; color:#ffd700;
+            font-family:'Frank Ruhl Libre',serif; text-shadow:0 0 25px rgba(255,215,0,0.5); }
+
+        /* ─── TIMELINE SLIDE ─── */
+        .timeline-item { display:flex; align-items:center; gap:16px; margin-bottom:12px; }
+        .tl-dot { width:18px; height:18px; border-radius:50%; background:linear-gradient(135deg,#d4a017,#ffd700);
+            flex-shrink:0; box-shadow:0 0 10px rgba(255,215,0,0.5); }
+        .tl-line { width:3px; height:20px; background:linear-gradient(to bottom,#d4a017,rgba(212,160,23,0.2));
+            margin:0 auto; }
+
+        /* DECO shapes */
+        .deco-shape { position:absolute; pointer-events:none; z-index:0; }
+
+        @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:0.01ms !important; transition-duration:0.2s !important; } }
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight" style="position:fixed;inset:0;z-index:99;pointer-events:none;"></div>
+
+<div class="deck">
+
+<!-- ══════════════════════════════════════════════════
+     שקופית 1 – פתיחה
+════════════════════════════════════════════════════ -->
+<div class="slide slide-1 active" data-slide="1">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-120px;background:#d4a017;opacity:0.13;"></div>
+        <div class="blob" style="width:350px;height:350px;bottom:-80px;left:-80px;background:#8b6914;opacity:0.1;"></div>
+        <div class="blob" style="width:220px;height:220px;top:40%;left:20%;background:#ffd700;opacity:0.07;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <!-- rings deco -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;pointer-events:none;">
+        <div style="width:580px;height:580px;border-radius:50%;border:1px solid rgba(212,160,23,0.12);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+        <div style="width:440px;height:440px;border-radius:50%;border:1px solid rgba(212,160,23,0.18);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    </div>
+    <div class="content text-center" style="max-width:900px;">
+        <div style="font-size:5rem;animation:heart-beat 2s ease-in-out infinite;margin-bottom:1rem;" class="reveal">💍</div>
+        <div style="font-size:1rem;letter-spacing:6px;text-transform:uppercase;color:#b8962e;margin-bottom:0.5rem;" class="reveal">משחק חידות משפחתי לרגל</div>
+        <h1 class="reveal glow-pulse" style="font-family:'Frank Ruhl Libre',serif;font-size:clamp(2.8rem,6vw,5.5rem);font-weight:900;background:linear-gradient(135deg,#d4a017,#ffd700,#f5e6c8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0.3rem 0;line-height:1.1;">
+            חמישים שנות אהבה
+        </h1>
+        <div style="font-size:clamp(1.8rem,3.5vw,3rem);color:#e8d5a3;margin:0.8rem 0 1.5rem;letter-spacing:3px;font-family:'Frank Ruhl Libre',serif;font-weight:700;" class="reveal">
+            🌹 מוטי וברכה 🌹
+        </div>
+
+        <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="background:linear-gradient(135deg,rgba(212,160,23,0.15),rgba(212,160,23,0.05));border:2px solid rgba(212,160,23,0.35);border-radius:16px;padding:16px 24px;min-width:200px;text-align:center;">
+                <div id="iconDisplayA" style="font-size:2.5rem;margin-bottom:4px;cursor:pointer;" onclick="toggleIconPicker('A')" title="בחר סמל">🏆</div>
+                <div id="iconPickerA" style="display:none;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:8px;background:rgba(0,0,0,0.4);border-radius:12px;padding:8px;">
+                    <span onclick="pickIcon('A','🏆')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🏆</span>
+                    <span onclick="pickIcon('A','⚡')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">⚡</span>
+                    <span onclick="pickIcon('A','🦁')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🦁</span>
+                    <span onclick="pickIcon('A','🔥')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🔥</span>
+                    <span onclick="pickIcon('A','🌟')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🌟</span>
+                    <span onclick="pickIcon('A','🦅')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🦅</span>
+                    <span onclick="pickIcon('A','🎯')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🎯</span>
+                    <span onclick="pickIcon('A','💎')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">💎</span>
+                    <span onclick="pickIcon('A','🚀')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🚀</span>
+                    <span onclick="pickIcon('A','🎸')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🎸</span>
+                    <span onclick="pickIcon('A','🌈')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🌈</span>
+                    <span onclick="pickIcon('A','🐉')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🐉</span>
+                </div>
+                <div style="font-size:0.8rem;color:#b8962e;font-weight:700;margin-bottom:6px;">קבוצה א' — ערוך שם:</div>
+                <input id="teamNameA" type="text" value="קבוצה א" oninput="updateTeamNames()"
+                    style="background:rgba(212,160,23,0.12);border:1.5px solid rgba(212,160,23,0.4);border-radius:20px;padding:6px 14px;color:#ffd700;font-weight:800;font-size:1rem;text-align:center;width:100%;outline:none;font-family:'Heebo',sans-serif;">
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(212,160,23,0.15),rgba(212,160,23,0.05));border:2px solid rgba(212,160,23,0.35);border-radius:16px;padding:16px 24px;min-width:200px;text-align:center;">
+                <div id="iconDisplayB" style="font-size:2.5rem;margin-bottom:4px;cursor:pointer;" onclick="toggleIconPicker('B')" title="בחר סמל">🎖️</div>
+                <div id="iconPickerB" style="display:none;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:8px;background:rgba(0,0,0,0.4);border-radius:12px;padding:8px;">
+                    <span onclick="pickIcon('B','🎖️')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🎖️</span>
+                    <span onclick="pickIcon('B','🌊')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🌊</span>
+                    <span onclick="pickIcon('B','🦋')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🦋</span>
+                    <span onclick="pickIcon('B','🌸')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🌸</span>
+                    <span onclick="pickIcon('B','⭐')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">⭐</span>
+                    <span onclick="pickIcon('B','🦊')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🦊</span>
+                    <span onclick="pickIcon('B','🎪')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🎪</span>
+                    <span onclick="pickIcon('B','🍀')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🍀</span>
+                    <span onclick="pickIcon('B','🎭')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🎭</span>
+                    <span onclick="pickIcon('B','🌙')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🌙</span>
+                    <span onclick="pickIcon('B','🦄')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🦄</span>
+                    <span onclick="pickIcon('B','🎵')" style="cursor:pointer;font-size:1.6rem;padding:2px 4px;">🎵</span>
+                </div>
+                <div style="font-size:0.8rem;color:#b8962e;font-weight:700;margin-bottom:6px;">קבוצה ב' — ערוך שם:</div>
+                <input id="teamNameB" type="text" value="קבוצה ב" oninput="updateTeamNames()"
+                    style="background:rgba(212,160,23,0.12);border:1.5px solid rgba(212,160,23,0.4);border-radius:20px;padding:6px 14px;color:#ffd700;font-weight:800;font-size:1rem;text-align:center;width:100%;outline:none;font-family:'Heebo',sans-serif;">
+            </div>
+        </div>
+        <div style="font-size:0.78rem;color:#8a6a10;margin-top:8px;text-align:center;" class="reveal">✏️ ערוך שמות וסמלים — לחץ על האמוג'י לבחירת סמל לקבוצה</div>
+        <div id="lottery-indicator" style="display:none;margin-top:1rem;background:rgba(212,160,23,0.12);border:1.5px solid rgba(212,160,23,0.35);border-radius:14px;padding:10px 24px;width:fit-content;margin-left:auto;margin-right:auto;text-align:center;" class="reveal"></div>
+        <div style="margin-top:1.5rem;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(2)">🎮 יאללה, מתחילים! ◀</button>
+            <button class="nav-slide-btn secondary" onclick="resetGame()" style="margin-top:6px;">🔄 אפס משחק</button>
+            <button class="nav-slide-btn secondary" onclick="openLottery()" style="margin-top:6px;">🎲 הגרל מי מתחיל ראשון</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     שקופית 2 – לוח המשחק
+════════════════════════════════════════════════════ -->
+<div class="slide slide-2" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:400px;height:400px;top:-100px;right:-100px;background:#d4a017;opacity:0.09;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-60px;background:#8b6914;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="max-width:1200px;">
+        <h2 class="reveal glow-pulse" style="font-family:'Frank Ruhl Libre',serif;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;text-align:center;color:#ffd700;margin-bottom:0.5rem;">
+            🎯 לוח המשחק
+        </h2>
+        <div class="reveal" style="display:flex;justify-content:center;align-items:center;gap:24px;margin-bottom:0.7rem;background:rgba(212,160,23,0.07);border:1px solid rgba(212,160,23,0.2);border-radius:30px;padding:8px 24px;width:fit-content;margin-left:auto;margin-right:auto;">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span id="boardIconA" style="font-size:1.5rem;">🏆</span>
+                <span class="team-name-a" style="color:#ffd700;font-weight:800;font-size:1rem;">קבוצה א</span>
+                <span id="board-score-a" style="color:#ffd700;font-size:1.3rem;font-weight:900;font-family:'Frank Ruhl Libre',serif;min-width:48px;text-align:center;">0</span>
+            </div>
+            <div style="color:#b8962e;font-size:1.2rem;">|</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span id="boardIconB" style="font-size:1.5rem;">🎖️</span>
+                <span class="team-name-b" style="color:#ffd700;font-weight:800;font-size:1rem;">קבוצה ב</span>
+                <span id="board-score-b" style="color:#ffd700;font-size:1.3rem;font-weight:900;font-family:'Frank Ruhl Libre',serif;min-width:48px;text-align:center;">0</span>
+            </div>
+        </div>
+        <table class="game-board reveal" id="gameBoard">
+            <thead>
+                <tr>
+                    <th class="cat-header">📸<br>תמונות</th>
+                    <th class="cat-header">💕<br>זוגיות</th>
+                    <th class="cat-header">✈️<br>טיולים</th>
+                    <th class="cat-header">👨‍👩‍👧‍👦<br>משפחה</th>
+                    <th class="cat-header">📜<br>היסטוריה</th>
+                </tr>
+            </thead>
+            <tbody id="boardBody">
+                <!-- Row 1: 100 pts -->
+                <tr>
+                    <td class="score-cell" data-slide="4" onclick="openQuestion(this,4)">100</td>
+                    <td class="score-cell" data-slide="6" onclick="openQuestion(this,6)">100</td>
+                    <td class="score-cell" data-slide="8" onclick="openQuestion(this,8)">100</td>
+                    <td class="score-cell" data-slide="10" onclick="openQuestion(this,10)">100</td>
+                    <td class="score-cell" data-slide="12" onclick="openQuestion(this,12)">100</td>
+                </tr>
+                <!-- Row 2: 200 pts -->
+                <tr>
+                    <td class="score-cell" data-slide="14" onclick="openQuestion(this,14)">200</td>
+                    <td class="score-cell" data-slide="16" onclick="openQuestion(this,16)">200</td>
+                    <td class="score-cell" data-slide="18" onclick="openQuestion(this,18)">200</td>
+                    <td class="score-cell" data-slide="20" onclick="openQuestion(this,20)">200</td>
+                    <td class="score-cell" data-slide="22" onclick="openQuestion(this,22)">200</td>
+                </tr>
+                <!-- Row 3: 300 pts -->
+                <tr>
+                    <td class="score-cell" data-slide="24" onclick="openQuestion(this,24)">300</td>
+                    <td class="score-cell" data-slide="26" onclick="openQuestion(this,26)">300</td>
+                    <td class="score-cell" data-slide="28" onclick="openQuestion(this,28)">300</td>
+                    <td class="score-cell" data-slide="30" onclick="openQuestion(this,30)">300</td>
+                    <td class="score-cell" data-slide="32" onclick="openQuestion(this,32)">300</td>
+                </tr>
+                <!-- Row 4: 400 pts -->
+                <tr>
+                    <td class="score-cell" data-slide="34" onclick="openQuestion(this,34)">400</td>
+                    <td class="score-cell" data-slide="36" onclick="openQuestion(this,36)">400</td>
+                    <td class="score-cell" data-slide="38" onclick="openQuestion(this,38)">400</td>
+                    <td class="score-cell" data-slide="40" onclick="openQuestion(this,40)">400</td>
+                    <td class="score-cell" data-slide="42" onclick="openQuestion(this,42)">400</td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="display:flex;justify-content:center;gap:16px;margin-top:0.8rem;" class="reveal">
+            <button class="nav-slide-btn secondary" onclick="goToSlide(3)">📊 לוח ניקוד</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(44)">🏁 סיום</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     שקופית 3 – לוח ניקוד
+════════════════════════════════════════════════════ -->
+<div class="slide slide-3" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:450px;height:450px;top:-100px;left:-100px;background:#d4a017;opacity:0.1;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-60px;right:-60px;background:#ffd700;opacity:0.08;"></div>
+    </div>
+    <div class="content text-center" style="max-width:900px;">
+        <h2 class="reveal" style="font-family:'Frank Ruhl Libre',serif;font-size:clamp(1.8rem,3.5vw,3rem);font-weight:900;color:#ffd700;margin-bottom:0.4rem;">📊 לוח ניקוד</h2>
+        <p class="reveal" style="color:#b8962e;font-size:0.9rem;margin-bottom:1.8rem;">הניקוד מתעדכן אוטומטית עם כל שאלה</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:1.5rem;" class="reveal">
+            <div class="team-card">
+                <div id="scoreIconA" style="font-size:2.8rem;margin-bottom:8px;">🏆</div>
+                <div style="font-size:1.1rem;font-weight:800;color:#ffd700;margin-bottom:4px;" class="team-name-a">קבוצה א</div>
+                <div class="team-score" id="score-a">0</div>
+                <div style="color:#b8962e;font-size:0.8rem;margin-top:4px;">נקודות</div>
+            </div>
+            <div class="team-card">
+                <div id="scoreIconB" style="font-size:2.8rem;margin-bottom:8px;">🎖️</div>
+                <div style="font-size:1.1rem;font-weight:800;color:#ffd700;margin-bottom:4px;" class="team-name-b">קבוצה ב</div>
+                <div class="team-score" id="score-b">0</div>
+                <div style="color:#b8962e;font-size:0.8rem;margin-top:4px;">נקודות</div>
+            </div>
+        </div>
+
+        <div class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- שקופית 4 – שאלה 📸 תמונות 100 נק' -->
+<div class="slide slide-4" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 100 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלת תמונה 🖼️</div>
+        <div class="question-card reveal">
+            <img src="images/photos_100.jpg" alt="תמונה של מוטי וברכה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                🤔 באיזו שנה צולמה התמונה?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. 2024</button>
+                <button class="mc-option">ב. 2025</button>
+                <button class="mc-option">ג. 2026</button>
+                <button class="mc-option">ד. 2023</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(5)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 5 – תשובה 📸 תמונות 100 נק' -->
+
+<div class="slide slide-5" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 100 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                2024 🎉
+            </div>
+
+            <div style="font-size:1.3rem;color:#f5e6c8;font-style:italic;font-family:'Frank Ruhl Libre',serif;margin-top:0.8rem;background:rgba(212,160,23,0.1);border-radius:12px;padding:10px 18px;border:1px solid rgba(212,160,23,0.25);">
+                💛 "אין כמו טיול בוקר מפנק בחוף אולגה שימשי ונעים"
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 6 – שאלה 💕 זוגיות 100 נק' -->
+<div class="slide slide-6" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 100 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלת תמונה 🖼️</div>
+        <div class="question-card reveal">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                💍 באיזו שנה סבא וסבתא התחתנו?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. 1975</button>
+                <button class="mc-option">ב. 1976</button>
+                <button class="mc-option">ג. 1972</button>
+                <button class="mc-option">ד. 1977</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(7)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 7 – תשובה 💕 זוגיות 100 נק' -->
+<div class="slide slide-7" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 100 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ב. 1976 🎉
+            </div>
+
+            <img src="images/relation_100_answer.jpg" alt="זוגיות 100 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
+                יום שני ל' בסיוון, תשל"ו<br>
+                28.6.1976 בשעה 7:00 בערב<br>
+                באולמי מלון "גן המלך"
+            </div>
+
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 8 – שאלה ✈️ טיולים 100 נק' -->
+<div class="slide slide-8" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 100 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div class="question-card reveal">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                לאן היה הטיול האחרון של סבא וסבתא מחוץ לגבולות המדינה?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. גאורגיה</button>
+                <button class="mc-option">ב. טביליסי</button>
+                <button class="mc-option">ג. אזרבייג'ן</button>
+                <button class="mc-option">ד. ארמניה</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(9)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 9 – תשובה ✈️ טיולים 100 נק' -->
+
+<div class="slide slide-9" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 100 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ג. אזרבייג'ן
+            </div>
+            <img src="images/trips_100_answer.jpg" alt="טיולים 100 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
+                טיול רגוע ומהנה בבאקו שבאזרבייג'ן<br>
+                <span style="font-size:1rem;color:#b8962e;">(תודות לטראמפ 😄)</span>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 10 – שאלה 👨‍👩‍👧‍👦 משפחה 100 נק' -->
+
+<div class="slide slide-10" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 100 נקודות</span>
+            <span class="badge-category">👨‍👩‍👧‍👦 משפחה</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div class="question-card reveal">
+            <img src="images/family_100.jpg" alt="משפחה 100" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                כמה צאצאים יש לסבא וסבתא?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. 10</button>
+                <button class="mc-option">ב. 11</button>
+                <button class="mc-option">ג. 12</button>
+                <button class="mc-option">ד. 13</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(11)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 11 – תשובה 👨‍👩‍👧‍👦 משפחה 100 נק' -->
+
+<div class="slide slide-11" data-slide="11">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 100 נקודות</span>
+            <span class="badge-category">👨‍👩‍👧‍👦 משפחה</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ד. 13
+            </div>
+            <img src="images/family_100_answer.jpg" alt="משפחה 100 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
+                3 ילדים ו-10 נכדים
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 12 – שאלה 📜 היסטוריה 100 נק' -->
+
+<div class="slide slide-12" data-slide="12">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 100 נקודות</span>
+            <span class="badge-category">📜 היסטוריה</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div class="question-card reveal">
+            <img src="images/history_100.jpg" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(0.95rem,1.8vw,1.2rem);color:#fdf6e3;font-weight:600;line-height:1.7;margin-bottom:0.8rem;">איזו מהאמירות הבאות נכונה?</p>
+            <div style="max-width:640px;margin:0 auto 1rem;text-align:right;">
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:10px 16px;margin:6px auto;font-size:clamp(0.85rem,1.5vw,1rem);color:#fdf6e3;">1. סבתא ברכה עבדה 32 שנים כמזכירה בבית ספר לחינוך מיוחד.</div>
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:10px 16px;margin:6px auto;font-size:clamp(0.85rem,1.5vw,1rem);color:#fdf6e3;">2. סבא מוטי השתתף בחטיפת רדאר מצרי במסגרת שירותו הצבאי.</div>
+            </div>
+            <div style="max-width:580px;margin:0 auto;">
+                <button class="mc-option" style="text-align:right;">א. 1 נכון, 2 לא נכון</button>
+                <button class="mc-option" style="text-align:right;">ב. 1 לא נכון, 2 נכון</button>
+                <button class="mc-option" style="text-align:right;">ג. שתי האמירות לא נכונות</button>
+                <button class="mc-option" style="text-align:right;">ד. שתי האמירות נכונות</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(13)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 13 – תשובה 📜 היסטוריה 100 נק' -->
+
+<div class="slide slide-13" data-slide="13">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div></div>
+    <div class="content text-center" style="max-width:900px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">✅ תשובה – 100 נקודות</span><span class="badge-category">📜 היסטוריה</span></div>
+        <div style="font-size:2rem;margin-bottom:0.4rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">✅ ד. שתי האמירות נכונות! 🎯</div>
+            <img src="images/history_100_answer.jpg" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;"><button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-a"><span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-b"><span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">✗ אף אחד לא ענה</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 14 – שאלה 📸 תמונות 200 נק' -->
+<div class="slide slide-14" data-slide="14">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 200 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלת תמונה 🖼️</div>
+        <div class="question-card reveal">
+            <img src="images/photos_200.jpg" alt="תמונות 200" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:0;">
+                מה הסיבה למסיבה?
+            </p>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(15)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 15 – תשובה 📸 תמונות 200 נק' -->
+
+<div class="slide slide-15" data-slide="15">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 200 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ מסיבת בת המצווה של לינוי
+            </div>
+            <img src="images/photos_200_answer.JPG" alt="תמונות 200 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 16 – שאלה 💕 זוגיות 200 נק' -->
+
+<div class="slide slide-16" data-slide="16">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 200 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div class="question-card reveal">
+            <img src="images/relation_200.jpg" alt="זוגיות 200" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                כמה זמן הזוג הצעיר מוטי וברכה יצאו עד שהתחתנו?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. 4 חודשים</button>
+                <button class="mc-option">ב. שנה וחצי</button>
+                <button class="mc-option">ג. שנה</button>
+                <button class="mc-option">ד. 8 חודשים</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(17)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 17 – תשובה 💕 זוגיות 200 נק' -->
+
+<div class="slide slide-17" data-slide="17">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 200 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ד. 8 חודשים
+            </div>
+            <img src="images/relation_200_answer.jpg" alt="זוגיות 200 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 18 – שאלה ✈️ טיולים 200 נק' -->
+
+<div class="slide slide-18" data-slide="18">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 200 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלת תמונה 🖼️</div>
+        <div class="question-card reveal">
+            <img src="images/trips_200.jpg" alt="טיולים 200" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                באיזו מדינה צולמה התמונה הזו?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. יוון</button>
+                <button class="mc-option">ב. ספרד</button>
+                <button class="mc-option">ג. איטליה</button>
+                <button class="mc-option">ד. פורטוגל</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(19)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 19 – תשובה ✈️ טיולים 200 נק' -->
+
+<div class="slide slide-19" data-slide="19">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 200 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ג. איטליה <span style="font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif;font-style:normal;">🇮🇹</span>
+            </div>
+            <img src="images/trips_200.jpg" alt="טיולים 200 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
+                צולמה בתחילת ספטמבר 2024<br>
+                בטיול בהר געש פעיל בסיציליה <span style="font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif;">🌋</span>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 20 – שאלה 👨‍👩‍👧‍👦 משפחה 200 נק' -->
+
+<div class="slide slide-20" data-slide="20">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 200 נקודות</span>
+            <span class="badge-category">👨‍👩‍👧‍👦 משפחה</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div class="question-card reveal">
+            <img src="images/family_200.jpg" alt="משפחה 200" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                מתי נולד הנכד השביעי במשפחה?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. 8 ליוני</button>
+                <button class="mc-option">ב. 20 לספטמבר</button>
+                <button class="mc-option">ג. 16 בדצמבר</button>
+                <button class="mc-option">ד. 24 לפברואר</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(21)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 21 – תשובה 👨‍👩‍👧‍👦 משפחה 200 נק' -->
+
+<div class="slide slide-21" data-slide="21">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 200 נקודות</span>
+            <span class="badge-category">👨‍👩‍👧‍👦 משפחה</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ג. 16 בדצמבר
+            </div>
+            <img src="images/family_200_answer.jpg" alt="משפחה 200 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
+                ארז, הנכד השביעי נולד ב-16/12/2013
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 22 – שאלה 📜 היסטוריה 200 נק' -->
+
+<div class="slide slide-22" data-slide="22">
+    <div class="gradient-mesh"><div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div><div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div></div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">⭐ 200 נקודות</span><span class="badge-category">📜 היסטוריה</span></div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה פתוחה 💬</div>
+        <div class="question-card reveal">
+            <img src="images/history_200.jpg" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(0.95rem,1.8vw,1.2rem);color:#fdf6e3;font-weight:700;line-height:1.6;margin-bottom:0.8rem;">אילו טענה מהטענות הבאות <u>אינה</u> נכונה?</p>
+            <div style="max-width:660px;margin:0 auto;">
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:9px 16px;margin:5px auto;font-size:clamp(0.85rem,1.5vw,1rem);color:#fdf6e3;text-align:right;">1. סבא מוטי עלה לארץ בגיל 13</div>
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:9px 16px;margin:5px auto;font-size:clamp(0.85rem,1.5vw,1rem);color:#fdf6e3;text-align:right;">2. סבא מוטי התגייס לצבא בשנת 1969 לצנחנים</div>
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:9px 16px;margin:5px auto;font-size:clamp(0.85rem,1.5vw,1rem);color:#fdf6e3;text-align:right;">3. סבתא ברכה היתה בילדותה ב'גן טובה'</div>
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:9px 16px;margin:5px auto;font-size:clamp(0.85rem,1.5vw,1rem);color:#fdf6e3;text-align:right;">4. סבתא ברכה נולדה במונית</div>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(23)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+<!-- שקופית 23 – תשובה 📜 היסטוריה 200 נק' -->
+<div class="slide slide-23" data-slide="23">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div></div>
+    <div class="content text-center" style="max-width:900px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">✅ תשובה – 200 נקודות</span><span class="badge-category">📜 היסטוריה</span></div>
+        <div style="font-size:2rem;margin-bottom:0.4rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">✅ טענה 1 - סבא מוטי עלה לארץ בגיל 13 - אינה נכונה</div>
+            <img src="images/history_200_answer.jpg" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);"><div style="font-size:1.35rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:700;line-height:1.8;margin-top:0.8rem;text-align:right;max-width:600px;margin-left:auto;margin-right:auto;">סבא מוטי עלה לארץ בגיל <strong style="color:#ffd700;font-size:1.5rem;">15</strong> (ולא 13)</div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;"><button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-a"><span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-b"><span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">✗ אף אחד לא ענה</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 24 – שאלה 📸 תמונות 300 נק' -->
+<div class="slide slide-24" data-slide="24">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 300 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלת תמונה 🖼️</div>
+        <div class="question-card reveal">
+            <img src="images/photos_300.jpg" alt="תמונות 300" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:0;">
+                על מי הוא מסתכל?
+            </p>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(25)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 25 – תשובה 📸 תמונות 300 נק' -->
+
+<div class="slide slide-25" data-slide="25">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 300 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ גיא החייל
+            </div>
+            <img src="images/photos_300_answer.jpg" alt="תמונות 300 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 26 – שאלה 💕 זוגיות 300 נק' -->
+
+<div class="slide slide-26" data-slide="26" data-timer="60">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 300 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:0.6rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה פתוחה 💬</div>
+
+        <!-- Timer display -->
+        <div id="timer-26" style="font-size:3rem;font-weight:900;color:#d4a017;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;transition:color 0.3s;text-shadow:0 0 15px rgba(212,160,23,0.5);">
+            ⏱️ זמן נותר לפתרון: <span id="timer-26-count">25</span>
+        </div>
+
+        <div class="question-card reveal">
+            <img src="images/relation_400.jpg" alt="זוגיות 400" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:0;">
+                מה הפתגם?
+            </p>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" id="answer-btn-36" onclick="goToSlide(27); stopTimer26();">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2); stopTimer26();">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var timerInterval26 = null;
+    var timerStarted26 = false;
+
+    function startTimer26() {
+        if (timerStarted26) return;
+        timerStarted26 = true;
+        var count = 25;
+        var el = document.getElementById('timer-26-count');
+        var wrapper = document.getElementById('timer-26');
+        timerInterval26 = setInterval(function() {
+            count--;
+            if (el) el.textContent = count;
+            if (count <= 10 && wrapper) {
+                wrapper.style.color = '#ff4444';
+                wrapper.style.textShadow = '0 0 20px rgba(255,68,68,0.7)';
+            }
+            if (count <= 0) {
+                clearInterval(timerInterval26);
+                if (el) el.textContent = '0';
+                // Hide the question image
+                var qImg = document.querySelector('.slide-26 .question-card img');
+                if (qImg) qImg.style.display = 'none';
+                // Show time-up message
+                if (wrapper) {
+                    wrapper.innerHTML = '⏰ הזמן נגמר!';
+                    wrapper.style.color = '#ff4444';
+                    wrapper.style.textShadow = '0 0 20px rgba(255,68,68,0.7)';
+                    wrapper.style.fontSize = '2.5rem';
+                }
+            }
+        }, 1000);
+    }
+
+    window.stopTimer26 = function() {
+        if (timerInterval26) clearInterval(timerInterval26);
+    };
+
+    // Start timer when this slide becomes active
+    var observer = new MutationObserver(function() {
+        var slide = document.querySelector('.slide-26');
+        if (slide && slide.classList.contains('active')) {
+            startTimer26();
+        }
+    });
+    observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+})();
+</script>
+
+<!-- שקופית 27 – תשובה 💕 זוגיות 300 נק' -->
+
+<div class="slide slide-27" data-slide="27">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 300 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.1rem,2.5vw,1.7rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);line-height:1.5;">
+                ✅ "מצא מוטי את ברכה, מצא אהבה"
+            </div>
+            <img src="images/relation_400_answer.jpg" alt="זוגיות 400 תשובה" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 38 – שאלה ✈️ טיולים 400 נק' -->
+
+<div class="slide slide-28" data-slide="28">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 300 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div class="question-card reveal">
+            <img src="images/trips_300.jpg" alt="טיולים 300" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                לפני כשנתיים, ביוני 2024, יצאו הזוג המאושר לטיול במונטנגרו, שבה המאכל הלאומי הוא...
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. בורק</button>
+                <button class="mc-option">ב. קצ'מאק</button>
+                <button class="mc-option">ג. צ'בורק</button>
+                <button class="mc-option">ד. פלאצ'ינטה</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(29)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 29 – תשובה ✈️ טיולים 300 נק' -->
+
+<div class="slide slide-29" data-slide="29">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 300 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ב. קצ'מאק
+            </div>
+            <img src="images/trips_300_answer.jpg" alt="טיולים 300 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 30 – שאלה 👨‍👩‍👧‍👦 משפחה 300 נק' -->
+
+<div class="slide slide-30" data-slide="30">
+    <div class="gradient-mesh"></div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">⭐ 300 נקודות</span><span class="badge-category">👨‍👩‍👧‍👦 משפחה</span></div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:0.6rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div id="phase1-30">
+            <div id="timer-30" style="font-size:3rem;font-weight:900;color:#d4a017;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;transition:color 0.3s;">⏱️ זמן נותר לצפייה: <span id="timer-30-count">10</span></div>
+            <div class="question-card" style="padding:1rem;">
+                <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;margin-bottom:0.8rem;">👀 התבוננו היטב בתמונה...</p>
+                <img src="images/family_300.jpg" style="max-height:52vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            </div>
+        </div>
+        <div id="phase2-30" style="display:none;">
+            <div class="question-card" style="padding:1.2rem;">
+                <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:700;line-height:1.5;margin-bottom:1.2rem;">ועכשיו השאלה... מי הזריז שהספיק למזוג לעצמו קוקה קולה זירו? 🤔</p>
+                <div style="max-width:550px;margin:0 auto;">
+                    <button class="mc-option">א. יובל</button>
+                    <button class="mc-option">ב. מירב</button>
+                    <button class="mc-option">ג. יוסי</button>
+                    <button class="mc-option">ד. רעות</button>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(31);stopTimer30();">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2);stopTimer30();">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+<script>(function(){var ti=null,ts=false;function start(){if(ts)return;ts=true;var c=10,el=document.getElementById('timer-30-count'),w=document.getElementById('timer-30');ti=setInterval(function(){c--;if(el)el.textContent=c;if(c<=5&&w)w.style.color='#ff4444';if(c<=0){clearInterval(ti);var p1=document.getElementById('phase1-30'),p2=document.getElementById('phase2-30');if(p1)p1.style.display='none';if(p2)p2.style.display='block';}},1000);}window.stopTimer30=function(){if(ti)clearInterval(ti);};new MutationObserver(function(){var s=document.querySelector('.slide-30');if(s&&s.classList.contains('active')){ts=false;var p1=document.getElementById('phase1-30'),p2=document.getElementById('phase2-30'),w=document.getElementById('timer-30'),el=document.getElementById('timer-30-count');if(p1)p1.style.display='block';if(p2)p2.style.display='none';if(w){w.style.color='#d4a017';w.style.fontSize='3rem';}if(el)el.textContent='10';start();}}).observe(document.body,{attributes:true,subtree:true,attributeFilter:['class']});})()</script>
+<!-- שקופית 31 – תשובה 👨‍👩‍👧‍👦 משפחה 300 נק' -->
+<div class="slide slide-31" data-slide="31">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div></div>
+    <div class="content text-center" style="max-width:900px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">✅ תשובה – 300 נקודות</span><span class="badge-category">👨‍👩‍👧‍👦 משפחה</span></div>
+        <div style="font-size:2rem;margin-bottom:0.4rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">✅ א. יובל 😄</div>
+            <img src="images/family_300_answer.jpg" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;"><button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-a"><span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-b"><span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">✗ אף אחד לא ענה</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 32 – שאלה 📜 היסטוריה 300 נק' -->
+<div class="slide slide-32" data-slide="32">
+    <div class="gradient-mesh"><div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div></div>
+    <div class="content text-center" style="max-width:960px;">
+        <div class="reveal" style="margin-bottom:0.6rem;"><span class="badge-score">⭐ 300 נקודות</span><span class="badge-category">📜 היסטוריה</span></div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:0.6rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה פתוחה 💬</div>
+        <div class="question-card reveal" style="padding:1rem;">
+            <img src="images/history_300.jpg" style="max-height:72vh;width:auto;max-width:95%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.3rem);color:#fdf6e3;font-weight:600;line-height:1.7;margin-bottom:0;">בתמונה הזו אחת הדמויות היא לא מי שהופיעה בתמונה המקורית...<br>מי הדמות הזו? ואיך היא קשורה למשפחה?</p>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(33)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+<!-- שקופית 33 – תשובה 📜 היסטוריה 300 נק' -->
+<div class="slide slide-33" data-slide="33">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div></div>
+    <div class="content text-center" style="max-width:900px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">✅ תשובה – 300 נקודות</span><span class="badge-category">📜 היסטוריה</span></div>
+        <div style="font-size:2rem;margin-bottom:0.4rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">✅ סבא מוטי כשהיה צעיר</div>
+            <img src="images/history_300_answer.jpg" style="max-height:72vh;width:auto;max-width:95%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;"><button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-a"><span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-b"><span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">✗ אף אחד לא ענה</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 34 – שאלה 📸 תמונות 400 נק' -->
+<div class="slide slide-34" data-slide="34">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 400 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלת תמונה 🖼️</div>
+        <div class="question-card reveal">
+            <img src="images/photos_400.jpg" alt="תמונות 400" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:0;">
+                של מי העיניים (מישהו מהמשפחה)?
+            </p>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(35)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 35 – תשובה 📸 תמונות 400 נק' -->
+
+<div class="slide slide-35" data-slide="35">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 400 נקודות</span>
+            <span class="badge-category">📸 תמונות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ העיניים של נועם
+            </div>
+            <img src="images/photos_400_answer.jpg" alt="תמונות 400 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
+                בחגיגות 70 לסבא מוטי בווילה בלפידות
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 36 – שאלה 💕 זוגיות 400 נק' -->
+
+<div class="slide slide-36" data-slide="36">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 400 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה פתוחה 💬</div>
+        <div class="question-card reveal">
+            <img src="images/relation_300.jpg" alt="זוגיות 300" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(0.95rem,1.8vw,1.3rem);color:#fdf6e3;font-weight:600;line-height:1.7;margin-bottom:1rem;text-align:right;">
+                סדר את האירועים הבאים לפי סדר כרונולוגי נכון:
+            </p>
+            <div style="max-width:640px;margin:0 auto;text-align:right;">
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:10px 18px;margin:6px auto;font-size:clamp(0.9rem,1.6vw,1.1rem);color:#fdf6e3;">א. החתונה המפוארת של הזוג הצעיר</div>
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:10px 18px;margin:6px auto;font-size:clamp(0.9rem,1.6vw,1.1rem);color:#fdf6e3;">ב. טקס החינה המסורתי בבית משפחת גרשי</div>
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:10px 18px;margin:6px auto;font-size:clamp(0.9rem,1.6vw,1.1rem);color:#fdf6e3;">ג. סבתא ברכה חגגה יום הולדת 22</div>
+                <div style="background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:12px;padding:10px 18px;margin:6px auto;font-size:clamp(0.9rem,1.6vw,1.1rem);color:#fdf6e3;">ד. תחילת גביית מס ערך מוסף (מע"מ) במדינת ישראל</div>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(37)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 37 – תשובה 💕 זוגיות 400 נק' -->
+
+<div class="slide slide-37" data-slide="37">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 400 נקודות</span>
+            <span class="badge-category">💕 זוגיות</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.6rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ב ← א ← ד ← ג
+            </div>
+            <div style="font-size:1rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.9;margin-bottom:1rem;text-align:right;max-width:560px;margin-left:auto;margin-right:auto;">
+                ב. טקס החינה<br>
+                א. החתונה המפוארת<br>
+                ד. תחילת מע"מ בישראל<br>
+                ג. יום הולדת 22 לברכה
+            </div>
+            <img src="images/relation_300_answer.jpg" alt="זוגיות 300 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 28 – שאלה ✈️ טיולים 300 נק' -->
+
+<div class="slide slide-38" data-slide="38">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 400 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div class="question-card reveal">
+            <img src="images/trips_400.jpg" alt="טיולים 400" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.6;margin-bottom:1.2rem;">
+                התמונה הזו צולמה באוקטובר 2021, במדינה שבה היא צולמה, מתרגמים את המשפט "50 שנה של אהבה" ל:
+            </p>
+            <div style="max-width:580px;margin:0 auto;">
+                <button class="mc-option">א. חמסין סנה מן אל-חוב</button>
+                <button class="mc-option">ב. חמסין עאם דיאל לחוב</button>
+                <button class="mc-option">ג. כ'מסון אנו דה אמור</button>
+                <button class="mc-option">ד. חמסין שנה מן אל-עישק</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(39)">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2)">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 39 – תשובה ✈️ טיולים 400 נק' -->
+
+<div class="slide slide-39" data-slide="39">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 400 נקודות</span>
+            <span class="badge-category">✈️ טיולים</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.1rem,2.5vw,1.8rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                ✅ ב. חמסין עאם דיאל לחוב
+            </div>
+            <img src="images/trips_400_answer.jpg" alt="טיולים 400 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.9;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
+                הטיול הבלתי נשכח במרוקו שבה אומרים (בשפת דריג'ה):<br>
+                <span style="font-size:1.4rem;font-family:'Frank Ruhl Libre',serif;letter-spacing:2px;" dir="rtl">خمسين عام ديال الحب</span><br>
+                <span style="font-size:1.1rem;color:#d4a017;">(חמסין עאם דיאל לחוב)</span>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 40 – שאלה 👨‍👩‍👧‍👦 משפחה 400 נק' -->
+
+<div class="slide slide-40" data-slide="40">
+    <div class="gradient-mesh"></div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">⭐ 400 נקודות</span><span class="badge-category">👨‍👩‍👧‍👦 משפחה</span></div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:0.6rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">שאלה אמריקאית 🔠</div>
+        <div id="timer-40" style="font-size:3rem;font-weight:900;color:#d4a017;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;transition:color 0.3s;">⏱️ זמן נותר לפתרון: <span id="timer-40-count">40</span></div>
+        <div class="question-card reveal">
+            <img src="images/family_400.jpg" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.4rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">כמה ימים עברו בין הולדת הנכד הבכור לבין הנכד הצעיר ביותר במשפחה?</p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">א. 4,890 ימים</button>
+                <button class="mc-option">ב. 5,541 ימים</button>
+                <button class="mc-option">ג. 4,380 ימים</button>
+                <button class="mc-option">ד. 5,219 ימים</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(41);stopTimer40();">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2);stopTimer40();">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+<script>(function(){var ti=null,ts=false;function start(){if(ts)return;ts=true;var c=40,el=document.getElementById('timer-40-count'),w=document.getElementById('timer-40');ti=setInterval(function(){c--;if(el)el.textContent=c;if(c<=10&&w)w.style.color='#ff4444';if(c<=0){clearInterval(ti);var img=document.querySelector('.slide-40 .question-card img');if(img)img.style.display='none';if(w)w.innerHTML='⏰ הזמן נגמר!';}},1000);}window.stopTimer40=function(){if(ti)clearInterval(ti);};new MutationObserver(function(){var s=document.querySelector('.slide-40');if(s&&s.classList.contains('active'))start();}).observe(document.body,{attributes:true,subtree:true,attributeFilter:['class']});})();</script>
+<!-- שקופית 41 – תשובה 👨‍👩‍👧‍👦 משפחה 400 נק' -->
+<div class="slide slide-41" data-slide="41">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div></div>
+    <div class="content text-center" style="max-width:900px;">
+        <div class="reveal" style="margin-bottom:0.8rem;"><span class="badge-score">✅ תשובה – 400 נקודות</span><span class="badge-category">👨‍👩‍👧‍👦 משפחה</span></div>
+        <div style="font-size:2rem;margin-bottom:0.4rem;" class="reveal">🎉</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(1.2rem,2.5vw,1.8rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">✅ ד. 5,219 ימים</div>
+            <img src="images/family_400_answer.jpg" style="max-height:50vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);"><div style="font-size:1.1rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:2;text-align:right;max-width:580px;margin:0 auto;">הנכד הבכור, <strong style="color:#ffd700;">בן</strong>, נולד ב-27/10/2007<br>הנכד הצעיר ביותר, <strong style="color:#ffd700;">עמית</strong>, נולד ב-9/2/2022<br>שביניהם: <strong style="color:#ffd700;">14 שנים, 3 חודשים, 5,219 ימים</strong></div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;"><button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-a"><span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;" class="award-btn-b"><span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓</button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">✗ אף אחד לא ענה</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 42 – שאלה 📜 היסטוריה 400 נק' -->
+<div class="slide slide-42" data-slide="42" data-timer="40">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-90px;background:#d4a017;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#8b6914;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">⭐ 400 נקודות</span>
+            <span class="badge-category">📜 היסטוריה</span>
+        </div>
+        <!-- Timer display -->
+        <div style="font-size:0.85rem;color:#b8962e;letter-spacing:1px;margin-bottom:0.2rem;" class="reveal">⏳ זמן נותר לפתרון:</div>
+        <div id="timer-42" style="font-size:3rem;font-weight:900;color:#d4a017;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.4rem;transition:color 0.3s;text-shadow:0 0 15px rgba(212,160,23,0.5);">
+            <span id="timer-42-count">40</span>
+        </div>
+        <div style="font-size:0.75rem;color:#b8962e;margin-bottom:1rem;letter-spacing:2px;text-transform:uppercase;" class="reveal">חידת הגיון 🧠</div>
+        <div class="question-card reveal">
+            <img src="images/history_400.jpg" alt="היסטוריה 400" style="max-height:40vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <p style="font-size:clamp(1rem,2vw,1.3rem);color:#fdf6e3;font-weight:600;line-height:1.5;margin-bottom:1.2rem;">
+                כמה פעמים חגגו סבא וסבתא ימי הולדת 'עגולים' (0 או 5) — משנת נישואיהם ועד היום?
+            </p>
+            <div style="max-width:550px;margin:0 auto;">
+                <button class="mc-option">🔢 18</button>
+                <button class="mc-option">🔢 20</button>
+                <button class="mc-option">🔢 22</button>
+                <button class="mc-option">🔢 24</button>
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(43);stopTimer42();">💡 הצג תשובה</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(2);stopTimer42();">◀ חזרה ללוח המשחק</button>
+        </div>
+    </div>
+</div>
+<script>
+(function() {
+    var timerInterval42 = null;
+    var timerStarted42 = false;
+    window.stopTimer42 = function() {
+        if (timerInterval42) clearInterval(timerInterval42);
+    };
+    function startTimer42() {
+        if (timerStarted42) return;
+        timerStarted42 = true;
+        var count = 40;
+        var el = document.getElementById('timer-42-count');
+        var wrapper = document.getElementById('timer-42');
+        timerInterval42 = setInterval(function() {
+            count--;
+            if (el) el.textContent = count;
+            if (count <= 10) {
+                if (wrapper) { wrapper.style.color = '#ff4444'; wrapper.style.textShadow = '0 0 20px rgba(255,68,68,0.7)'; }
+            }
+            if (count <= 0) {
+                clearInterval(timerInterval42);
+                if (el) el.textContent = '0';
+                var btns = document.querySelectorAll('.slide-42 .mc-option');
+                btns.forEach(function(b){ b.style.display='none'; });
+                if (wrapper) { wrapper.innerHTML = '⏰ הזמן נגמר!'; wrapper.style.color = '#ff4444'; wrapper.style.fontSize = '2.5rem'; }
+            }
+        }, 1000);
+    }
+    var observer = new MutationObserver(function() {
+        var slide = document.querySelector('.slide-42');
+        if (slide && slide.classList.contains('active')) startTimer42();
+    });
+    observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+})();
+</script>
+
+<!-- שקופית 43 – תשובה 📜 היסטוריה 400 נק' -->
+<div class="slide slide-43" data-slide="43">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-80px;background:#22A050;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-50px;background:#d4a017;opacity:0.06;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:0.8rem;">
+            <span class="badge-score">✅ תשובה – 400 נקודות</span>
+            <span class="badge-category">📜 היסטוריה</span>
+        </div>
+        <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎂</div>
+        <div class="answer-card reveal">
+            <div style="font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.5rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                20 פעמים!
+            </div>
+            <img src="images/history_400_answer.jpg" alt="תשובה היסטוריה 400" style="max-height:45vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+            <div style="font-size:1rem;color:#e8d5a3;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;background:rgba(212,160,23,0.08);border-radius:12px;padding:10px 18px;border:1px solid rgba(212,160,23,0.25);">
+                10 פעמים לסבא 🎂 + 10 פעמים לסבתא 🎂
+            </div>
+        </div>
+        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
+                    <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('b')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-b">
+                    <span class="award-icon-b">🎖️</span> <span class="team-name-b">קבוצה ב</span> ענתה נכון ✓
+                </button>
+                <button onclick="awardAndMark('none')" style="background:rgba(255,100,100,0.1);border:1.5px solid rgba(255,100,100,0.3);color:#ff9999;padding:10px 18px;border-radius:24px;cursor:pointer;font-size:0.9rem;font-weight:700;">
+                    ✗ אף אחד לא ענה
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 44 – גמר המשחק -->
+<div class="slide slide-44" data-slide="44">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-120px;background:#ffd700;opacity:0.12;"></div>
+        <div class="blob" style="width:350px;height:350px;bottom:-80px;left:-80px;background:#d4a017;opacity:0.1;"></div>
+        <div class="blob" style="width:200px;height:200px;top:35%;left:25%;background:#8b6914;opacity:0.07;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center" style="max-width:900px;">
+        <div style="font-size:4rem;animation:heart-beat 1.5s ease-in-out infinite;margin-bottom:0.8rem;" class="reveal">🏆</div>
+        <h2 class="reveal glow-pulse" style="font-family:'Frank Ruhl Libre',serif;font-size:clamp(2rem,4.5vw,3.5rem);font-weight:900;color:#ffd700;margin-bottom:0.5rem;">
+            תוצאות הגמר!
+        </h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:1.5rem 0;" class="reveal">
+            <div class="team-card">
+                <div id="finalIconA" style="font-size:2rem;">🏆</div>
+                <div style="font-size:1rem;font-weight:800;color:#ffd700;margin:8px 0;" class="team-name-a">[שם קבוצה א']</div>
+                <div class="team-score" id="final-score-a">0</div>
+                <div style="color:#b8962e;font-size:0.8rem;">נקודות</div>
+            </div>
+            <div class="team-card">
+                <div id="finalIconB" style="font-size:2rem;">🎖️</div>
+                <div style="font-size:1rem;font-weight:800;color:#ffd700;margin:8px 0;" class="team-name-b">[שם קבוצה ב']</div>
+                <div class="team-score" id="final-score-b">0</div>
+                <div style="color:#b8962e;font-size:0.8rem;">נקודות</div>
+            </div>
+        </div>
+        <div style="background:rgba(212,160,23,0.1);border:2px solid rgba(212,160,23,0.3);border-radius:16px;padding:1rem 2rem;margin:1rem auto;max-width:500px;" class="reveal" id="winnerBox">
+            <div style="font-size:1.3rem;font-weight:900;color:#ffd700;">🥇 הקבוצה המנצחת:</div>
+            <div id="winnerDisplay" style="font-size:1.6rem;font-weight:900;color:#ffd700;margin-top:8px;font-family:'Frank Ruhl Libre',serif;"></div>
+        </div>
+        <div style="margin-top:1rem;" class="reveal">
+            <button class="nav-slide-btn" onclick="goToSlide(45)">💍 לדף הסיום ◀</button>
+            <button class="nav-slide-btn secondary" onclick="goToSlide(3)">📊 לוח ניקוד</button>
+            <button class="nav-slide-btn secondary" onclick="resetGame()">🔄 אפס משחק</button>
+        </div>
+    </div>
+</div>
+
+<!-- שקופית 45 – סיום וברכות -->
+<div class="slide slide-45" data-slide="45">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:550px;height:550px;top:-130px;right:-130px;background:#d4a017;opacity:0.13;"></div>
+        <div class="blob" style="width:380px;height:380px;bottom:-90px;left:-90px;background:#ffd700;opacity:0.1;"></div>
+        <div class="blob" style="width:240px;height:240px;top:40%;left:20%;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <audio id="finalSong" src="audio/moti_braha_50_song.mp3" preload="auto"></audio>
+    <div class="content text-center" style="max-width:960px;">
+        <div style="font-size:3.4rem;animation:float 3s ease-in-out infinite;margin-bottom:0.35rem;" class="reveal">💍</div>
+        <h1 class="reveal glow-pulse" style="font-family:'Frank Ruhl Libre',serif;font-size:clamp(2.2rem,4.8vw,4rem);font-weight:900;background:linear-gradient(135deg,#d4a017,#ffd700,#f5e6c8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.25rem;">
+            מזל טוב מוטי וברכה!
+        </h1>
+        <p class="reveal" style="font-size:clamp(1rem,2vw,1.45rem);color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.8rem;">
+            חמישים שנה של אהבה, משפחה וזיכרונות יפים
+        </p>        <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;background:rgba(212,160,23,0.1);border:1.5px solid rgba(212,160,23,0.3);border-radius:14px;padding:10px 14px;margin:0.4rem auto 0.8rem;max-width:560px;">
+            <button id="finalSongToggle" class="nav-slide-btn" onclick="toggleFinalSong()" aria-label="נגן או השהה את השיר">⏸ השהה</button>
+            <button class="nav-slide-btn secondary" onclick="restartFinalSong()" aria-label="התחל את השיר מהתחלה">↺ מהתחלה</button>
+            <label for="finalSongVolume" style="display:flex;align-items:center;gap:8px;color:#ffd700;font-size:0.9rem;font-weight:800;">
+                עוצמה
+                <input id="finalSongVolume" type="range" min="0" max="1" step="0.05" value="1" oninput="setFinalSongVolume(this.value)" style="width:120px;accent-color:#ffd700;">
+            </label>
+        </div>
+        <div class="reveal" style="background:rgba(212,160,23,0.1);border:2px solid rgba(212,160,23,0.3);border-radius:16px;padding:1rem 1.4rem;margin:0.7rem auto;max-width:760px;text-align:right;max-height:54vh;overflow-y:auto;box-shadow:0 0 28px rgba(212,160,23,0.12);">
+            <div style="font-family:'Frank Ruhl Libre',serif;color:#fdf6e3;line-height:1.85;font-size:clamp(0.95rem,1.8vw,1.18rem);white-space:pre-line;">
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0;">בית 1</span>
+בַּקַּיִץ שֶׁל שִׁבְעִים וָשֵׁשׁ הִתְחִיל הַסִּפּוּר,
+שְׁנֵי לְבָבוֹת מָצְאוּ אֶת הָאוֹר.
+מוֹטִי וּבְרָכָה, יָד בְּיָד,
+בָּנוּ בַּיִת שֶׁל אַהֲבָה לָעַד.
+
+דֶּרֶךְ שְׂמָחוֹת וְגַם מִבְחָנִים,
+בְּחַרְתֶּם תָּמִיד זֶה בְּזוֹ כָּל הַשָּׁנִים.
+כָּל יוֹם שֶׁעָבַר חִזֵּק אֶת הַקֶּשֶׁר,
+וְהַלֵּב רַק הָלַךְ וְהִתְרַגֵּשׁ יוֹתֵר.
+
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0.7rem;">קדם-פזמון</span>
+מֵאָז וְעַד הַיּוֹם, אוֹתוֹ מַבָּט בָּעֵינַיִם,
+אוֹתוֹ חִבּוּק שֶׁמְּחַבֵּר בֵּין הַשָּׁמַיִם.
+
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0.7rem;">פזמון</span>
+חֲמִשִּׁים שָׁנִים שֶׁל אַהֲבָה,
+שֶׁל מִשְׁפָּחָה וְשֶׁל תִּקְוָה.
+שְׁלוֹשָׁה יְלָדִים, עֲשָׂרָה נְכָדִים,
+אוֹצֵר שֶׁל חִיּוּכִים וּרְגָעִים יָפִים.
+
+חֲמִשִּׁים שָׁנִים שֶׁל חֲלוֹמוֹת,
+שֶׁל מַסָּעוֹת וְזִכְרוֹנוֹת.
+מוֹטִי וּבְרָכָה, אֵיזֶה מַזָּל,
+אַהֲבָה כָּזֹאת נִשְׁאֶרֶת לְעוֹלָם.
+
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0.7rem;">בית 2</span>
+בְּרָכָה עִם לֵב גָּדוֹל שֶׁל נְתִינָה,
+הִקְדִּישָׁה חַיִּים שְׁלֵמִים לַמִּשְׁפָּחָה.
+חִיּוּךְ אֶחָד יָכוֹל לְשַׁנּוֹת עוֹלָם,
+וְזֶה בְּדִיּוּק מָה שֶׁנָּתַתָּ לְכֻלָּם.
+
+וּמוֹטִי תָּמִיד עִם כּוֹחַ וְשֶׁקֶט,
+אִישׁ שֶׁל אֱמֶת, שֶׁל דֶּרֶךְ וְשֶׁל צֶדֶק.
+כָּתֵף בְּטוּחָה, לֵב רָחָב,
+שֶׁעָלָיו תָּמִיד אֶפְשָׁר לְהִשָּׁעֵן.
+
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0.7rem;">פזמון</span>
+חֲמִשִּׁים שָׁנִים שֶׁל אַהֲבָה...
+שֶׁל מִשְׁפָּחָה וְשֶׁל תִּקְוָה...
+שְׁלוֹשָׁה יְלָדִים, עֲשָׂרָה נְכָדִים,
+אוֹצַר שֶׁל חִיּוּכִים וּרְגָעִים יָפִים.
+
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0.7rem;">גשר</span>
+מֵהַחוֹף שֶׁל אוֹלְגָּה וְעַד בָּאקוּ הָרְחוֹקָה,
+כָּל מַסָּע הָפַךְ לְעוֹד מַתָּנָה.
+לֹא הַמָּקוֹם הוּא שֶׁנָּתַן אֶת הָעֵרֶךְ,
+אֶלָּא הַיָּד שֶׁאָחֲזָה בַּיָּד לְאֹרֶךְ כָּל הַדֶּרֶךְ.
+
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0.7rem;">פזמון אחרון</span>
+חֲמִשִּׁים שָׁנִים שֶׁל אַהֲבָה,
+וְהַלֵּב עֲדַיִן שָׁר בְּשִׂמְחָה.
+כָּל הַיְּלָדִים וְכָל הַנְּכָדִים,
+שָׁרִים לָכֶם הַיּוֹם מִכָּל הַלֵּב בַּפָּנִים.
+
+עוֹד שָׁנִים שֶׁל בְּרִיאוּת וְאוֹר,
+עוֹד אֶלֶף זִכְרוֹנוֹת לִשְׁמֹר.
+מוֹטִי וּבְרָכָה, תּוֹדָה עַל הַכֹּל,
+הָאַהֲבָה שֶׁלָּכֶם הִיא הַבַּיִת שֶׁל כֻּלָּנוּ.
+
+<span style="display:block;color:#ffd700;font-weight:900;font-size:1.15em;margin-top:0.7rem;">סיום</span>
+מָצָא מוֹטִי אֶת בְּרָכָה...
+מָצָא אַהֲבָה...
+וַחֲמִשִּׁים שָׁנָה אַחַר כָּךְ,
+כֻּלָּנוּ שָׁרִים לָכֶם בְּאַהֲבָה.
+            </div>
+        </div>
+        <div style="display:flex;gap:16px;justify-content:center;margin-top:1rem;flex-wrap:wrap;" class="reveal">
+            <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
+                <div style="font-size:1.8rem;">💕</div>
+                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">מוטי</div>
+            </div>
+            <div style="display:flex;align-items:center;font-size:2rem;">❤️</div>
+            <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
+                <div style="font-size:1.8rem;">💕</div>
+                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">ברכה</div>
+            </div>
+        </div>
+        <div style="margin-top:1rem;" class="reveal">
+            <button class="nav-slide-btn secondary" onclick="goToSlide(1)">🏠 חזרה לפתיחה</button>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Confirmation Modal -->
+<div id="resetModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
+    <div style="background:linear-gradient(135deg,#1a1200,#2a1f00);border:2px solid rgba(212,160,23,0.5);border-radius:20px;padding:2rem 2.5rem;max-width:400px;text-align:center;box-shadow:0 0 40px rgba(212,160,23,0.2);">
+        <div style="font-size:2.5rem;margin-bottom:0.8rem;">⚠️</div>
+        <div style="font-size:1.2rem;font-weight:800;color:#ffd700;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.6rem;">לאפס את המשחק?</div>
+        <div style="font-size:0.9rem;color:#b8962e;margin-bottom:1.5rem;line-height:1.5;">כל הניקוד, שמות הקבוצות והשאלות שנענו יאופסו לחלוטין.</div>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <button onclick="confirmReset()" style="background:linear-gradient(135deg,#8b0000,#cc0000);border:none;color:#fff;padding:10px 28px;border-radius:20px;cursor:pointer;font-size:1rem;font-weight:800;">כן, אפס</button>
+            <button onclick="closeResetModal()" style="background:rgba(212,160,23,0.15);border:1.5px solid rgba(212,160,23,0.4);color:#ffd700;padding:10px 28px;border-radius:20px;cursor:pointer;font-size:1rem;font-weight:800;">ביטול</button>
+        </div>
+    </div>
+</div>
+</div><!-- /deck -->
+
+<!-- NAVIGATION -->
+<div class="nav-controls" style="display:none!important;">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8250;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8249;</button>
+    <span class="slide-counter" id="counter">1 / 45</span>
+</div>
+
+<script>
+    /* ═══ SCORES ═══ */
+    let scores = {a: 0, b: 0};
+    let teamIcons = {a: '🏆', b: '🎖️'};
+    let lastScore = null; // for undo
+
+    function syncScoreDisplays() {
+        ['a','b'].forEach(t => {
+            ['score-','board-score-','final-score-'].forEach(prefix => {
+                const el = document.getElementById(prefix + t);
+                if(el) el.textContent = scores[t];
+            });
+        });
+    }
+
+    function updateScore(team, delta) {
+        lastScore = {team, delta};
+        scores[team] = Math.max(0, scores[team] + delta);
+        syncScoreDisplays();
+    }
+
+    function undoLastScore() {
+        if(!lastScore) return;
+        scores[lastScore.team] = Math.max(0, scores[lastScore.team] - lastScore.delta);
+        syncScoreDisplays();
+        lastScore = null;
+    }
+
+    function toggleIconPicker(team) {
+        const picker = document.getElementById('iconPicker' + team);
+        picker.style.display = picker.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function pickIcon(team, icon) {
+        teamIcons[team.toLowerCase()] = icon;
+        document.getElementById('iconDisplay' + team).textContent = icon;
+        document.getElementById('iconPicker' + team).style.display = 'none';
+        // sync all icon spots
+        const ids = ['boardIcon' + team, 'scoreIcon' + team, 'finalIcon' + team];
+        ids.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = icon; });
+        document.querySelectorAll('.award-icon-' + team.toLowerCase()).forEach(el => el.textContent = icon);
+    }
+
+    /* cellAwards: tracks which team was awarded per question cell slide */
+    const cellAwards = {};
+
+    /* Award team: add score + mark board cell + go back */
+    function awardAndMark(team) {
+        const qSlide = current - 1;
+        const cell = document.querySelector('.score-cell[data-slide="' + qSlide + '"]');
+        const pts = cell ? parseInt(cell.getAttribute('data-score') || 0) : 0;
+
+        // Undo previous award for this cell if any
+        const prev = cellAwards[qSlide];
+        if(prev && prev !== 'none') {
+            scores[prev] = Math.max(0, scores[prev] - pts);
+        }
+
+        // Apply new award
+        if(cell) cell.classList.add('used');
+        if(team !== 'none') {
+            scores[team] = scores[team] + pts;
+            if(cell) cell.innerHTML = '<span style="font-size:1.6rem;">' + teamIcons[team] + '</span>';
+        } else {
+            if(cell) cell.innerHTML = '<span style="font-size:1.4rem;opacity:0.35;">✗</span>';
+        }
+
+        cellAwards[qSlide] = team;
+        lastScore = null; // clear global undo since we manage per-cell now
+        syncScoreDisplays();
+
+        document.querySelectorAll('.award-icon-a').forEach(el => el.textContent = teamIcons.a);
+        document.querySelectorAll('.award-icon-b').forEach(el => el.textContent = teamIcons.b);
+        goToSlide(2);
+    }
+
+    /* ═══ BOARD CLICK ═══ */
+    function openQuestion(cell, slideNum) {
+        // Save original score value for later use in awardAndMark
+        if(!cell.getAttribute('data-score')) {
+            cell.setAttribute('data-score', cell.textContent.trim());
+        }
+        goToSlide(slideNum);
+    }
+
+    /* ═══ DECK NAVIGATION ═══ */
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+    const dotsContainer = document.getElementById('dots');
+    const counter = document.getElementById('counter');
+    for (let i = 1; i <= total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 1 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+    }
+    function goToSlide(n) {
+        const prev = document.querySelector('.slide.active');
+        const next = document.querySelector('.slide[data-slide="' + n + '"]');
+        if (prev) prev.classList.remove('active');
+        if (next) { next.classList.add('active'); animateSlide(next); }
+        current = n; updateNav();
+        if(n === finaleSlide) showWinner();
+        handleFinalSong(n);
+    }
+
+    const finalSongSlide = 45;
+
+    function updateFinalSongToggle() {
+        const song = document.getElementById('finalSong');
+        const toggle = document.getElementById('finalSongToggle');
+        if (!song || !toggle) return;
+        toggle.textContent = song.paused ? '▶ נגן' : '⏸ השהה';
+    }
+
+    function handleFinalSong(slideNumber) {
+        const song = document.getElementById('finalSong');
+        if (!song) return;
+
+        if (slideNumber === finalSongSlide) {
+            song.currentTime = 0;
+            const playPromise = song.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => updateFinalSongToggle());
+            }
+        } else {
+            song.pause();
+            song.currentTime = 0;
+        }
+        updateFinalSongToggle();
+    }
+
+    function toggleFinalSong() {
+        const song = document.getElementById('finalSong');
+        if (!song) return;
+        if (song.paused) {
+            const playPromise = song.play();
+            if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => updateFinalSongToggle());
+            }
+        } else {
+            song.pause();
+        }
+        updateFinalSongToggle();
+    }
+
+    function restartFinalSong() {
+        const song = document.getElementById('finalSong');
+        if (!song) return;
+        song.currentTime = 0;
+        const playPromise = song.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => updateFinalSongToggle());
+        }
+        updateFinalSongToggle();
+    }
+
+    function setFinalSongVolume(value) {
+        const song = document.getElementById('finalSong');
+        if (!song) return;
+        song.volume = Number(value);
+    }
+    const finaleSlide = 44;
+
+    function showWinner() {
+        const nameA = (document.getElementById('teamNameA')||{}).value || 'קבוצה א';
+        const nameB = (document.getElementById('teamNameB')||{}).value || 'קבוצה ב';
+        const wd = document.getElementById('winnerDisplay');
+        const wf = document.getElementById('winnerFireworks');
+        const wb = document.getElementById('winnerBox');
+        if(!wd) return;
+
+        let isTie = scores.a === scores.b;
+        let winnerName, winnerIcon;
+
+        if(isTie) {
+            winnerName = 'תיקו!';
+            winnerIcon = '🤝';
+            wd.innerHTML = '<div style="font-size:2rem;margin-bottom:4px;">🤝</div><div style="font-size:1.8rem;">תיקו!</div>';
+            if(wb) wb.style.borderColor = 'rgba(180,180,180,0.5)';
+            return;
+        }
+
+        if(scores.a > scores.b) {
+            winnerName = nameA; winnerIcon = teamIcons.a;
+        } else {
+            winnerName = nameB; winnerIcon = teamIcons.b;
+        }
+
+        // Big winner display
+        wd.innerHTML = `
+            <div style="font-size:5.5rem;animation:heart-beat 1s ease-in-out infinite;margin-bottom:8px;filter:drop-shadow(0 0 20px rgba(255,215,0,0.6));">${winnerIcon}</div>
+            <div style="font-size:2.8rem;font-weight:900;color:#ffd700;text-shadow:0 0 40px rgba(255,215,0,0.9),0 0 80px rgba(255,215,0,0.4);font-family:'Frank Ruhl Libre',serif;">${winnerName}</div>
+            <div style="font-size:1.2rem;color:#e8d5a3;margin-top:8px;letter-spacing:3px;">🏆 המנצחים! 🏆</div>
+        `;
+
+        if(wb) wb.style.borderColor = 'rgba(255,215,0,0.7)';
+    }
+    function changeSlide(dir) { let nx = current + dir; if(nx<1) nx=total; if(nx>total) nx=1; goToSlide(nx); }
+    function updateNav() {
+        document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i+1===current));
+        counter.textContent = current + ' / ' + total;
+    }
+    document.addEventListener('keydown', e => {
+        if(e.key==='ArrowLeft' || e.key===' ') { e.preventDefault(); changeSlide(1); }
+        if(e.key==='ArrowRight') { e.preventDefault(); changeSlide(-1); }
+    });
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', e => { const diff = touchStartX - e.changedTouches[0].clientX; if(Math.abs(diff)>50) changeSlide(diff>0?1:-1); });
+
+    /* ═══ REVEAL ANIMATION ═══ */
+    function animateSlide(slide) {
+        // Clear any MC selections on the incoming slide
+        slide.querySelectorAll('.mc-option').forEach(btn => btn.classList.remove('selected'));
+        slide.querySelectorAll('.reveal').forEach((el,i) => {
+            el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(18px)';
+            el.offsetHeight;
+            const delay = i * 0.08;
+            el.style.transition = `opacity 0.4s ease ${delay}s, transform 0.4s ease ${delay}s`;
+            el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+        });
+    }
+
+    /* ═══ MOUSE SPOTLIGHT ═══ */
+    document.addEventListener('mousemove', e => {
+        const s = document.querySelector('.mouse-spotlight');
+        if(s) s.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(212,160,23,0.055), transparent 40%)`;
+    });
+
+    /* ═══ PARTICLES ═══ */
+    window.initParticles = function(canvas, options) {
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+        const count = options.count || 40;
+        let mx=-1000, my=-1000;
+        const particles = Array.from({length:count}, () => ({
+            x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+            vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3,
+            size:Math.random()*2+0.8, alpha:Math.random()*0.3+0.1
+        }));
+        if(options.interactive) {
+            canvas.addEventListener('mousemove', e => { const r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+            canvas.addEventListener('mouseleave', () => { mx=-1000; my=-1000; });
+        }
+        (function animate() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles.forEach(p => {
+                if(options.interactive) { const dx=p.x-mx,dy=p.y-my,dist=Math.sqrt(dx*dx+dy*dy); if(dist<120) { const f=(120-dist)/120*2; p.vx+=(dx/dist)*f*0.1; p.vy+=(dy/dist)*f*0.1; } }
+                p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
+                if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
+                if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+                ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+                ctx.fillStyle=`rgba(212,160,23,${p.alpha})`; ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        })();
+    };
+    document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, {interactive:true,count:45}));
+
+
+
+    /* === Reset Game === */
+    function resetGame() {
+        const modal = document.getElementById('resetModal');
+        modal.style.display = 'flex';
+    }
+    function closeResetModal() {
+        document.getElementById('resetModal').style.display = 'none';
+    }
+    function confirmReset() {
+        closeResetModal();
+        // Reset scores
+        scores = {a: 0, b: 0};
+        lastScore = null;
+        Object.keys(cellAwards).forEach(k => delete cellAwards[k]);
+        syncScoreDisplays();
+
+        // Reset board cells using stored original values
+        document.querySelectorAll('.score-cell').forEach(cell => {
+            const orig = cell.getAttribute('data-orig');
+            if(orig) cell.innerHTML = orig;
+            cell.classList.remove('used');
+            cell.removeAttribute('data-score');
+        });
+
+        // Reset team names
+        const nameA = document.getElementById('teamNameA');
+        const nameB = document.getElementById('teamNameB');
+        if(nameA) nameA.value = 'קבוצה א';
+        if(nameB) nameB.value = 'קבוצה ב';
+        updateTeamNames();
+
+        // Reset icons
+        pickIcon('A', '🏆');
+        pickIcon('B', '🎖️');
+
+        goToSlide(1);
+    }
+    /* === Team Name Sync === */
+    function updateTeamNames() {
+        const a = document.getElementById('teamNameA').value || 'קבוצה א';
+        const b = document.getElementById('teamNameB').value || 'קבוצה ב';
+        document.querySelectorAll('.team-name-a').forEach(el => el.textContent = a);
+        document.querySelectorAll('.team-name-b').forEach(el => el.textContent = b);
+    }
+    /* MC option selection */
+    document.addEventListener('click', function(e) {
+        if(e.target.classList.contains('mc-option')) {
+            const siblings = e.target.closest('div').querySelectorAll('.mc-option');
+            siblings.forEach(btn => btn.classList.remove('selected'));
+            e.target.classList.add('selected');
+        }
+    });
+
+    /* Clear MC selections when navigating to a new slide */
+    const _origGoToSlide = goToSlide;
+
+    /* Store original board cell values */
+    document.querySelectorAll('.score-cell').forEach(cell => {
+        cell.setAttribute('data-orig', cell.innerHTML.trim());
+    });
+
+    /* Animate first slide */
+    try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+
+<!-- שקופית 46 – כללי המשחק -->
+<div class="slide slide-46" data-slide="46">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:450px;height:450px;top:-100px;right:-100px;background:#d4a017;opacity:0.1;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-60px;background:#8b6914;opacity:0.08;"></div>
+    </div>
+    <div class="content text-center" style="max-width:860px;">
+        <div class="reveal" style="margin-bottom:1rem;">
+            <span class="badge-score" style="font-size:1.1rem;padding:8px 28px;">📋 כללי המשחק</span>
+        </div>
+        <div style="text-align:right;max-width:680px;margin:0 auto;" class="reveal">
+            <div style="background:linear-gradient(135deg,rgba(212,160,23,0.1),rgba(212,160,23,0.04));border:1.5px solid rgba(212,160,23,0.3);border-radius:16px;padding:1.5rem 2rem;">
+                <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem;">
+                    <span style="font-size:1.6rem;flex-shrink:0;">👥</span>
+                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;">מתחלקים לשתי קבוצות — כל קבוצה בוחרת <strong style="color:#ffd700;">שם וסמל</strong> לקבוצה.</p>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem;">
+                    <span style="font-size:1.6rem;flex-shrink:0;">🎯</span>
+                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;">בלוח המשחק <strong style="color:#ffd700;">20 שאלות</strong> ברמות קושי שונות — ניקוד גבוה יותר לשאלות הקשות.</p>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem;">
+                    <span style="font-size:1.6rem;flex-shrink:0;">🎤</span>
+                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;">כל קבוצה בוחרת <strong style="color:#ffd700;">נציג אחד</strong> האחראי לומר את התשובה הסופית — רק תשובתו קובעת!</p>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem;">
+                    <span style="font-size:1.6rem;flex-shrink:0;">🔄</span>
+                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;">כל קבוצה עונה <strong style="color:#ffd700;">בתורה</strong> על שאלה אחת שהיא בוחרת מהלוח.</p>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem;">
+                    <span style="font-size:1.6rem;flex-shrink:0;">🚫</span>
+                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;"><strong style="color:#ff9999;">אסור</strong> לסבא ולסבתא להשתתף בענייה על השאלות.</p>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:14px;">
+                    <span style="font-size:1.6rem;flex-shrink:0;">📵</span>
+                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;"><strong style="color:#ff9999;">אסור</strong> להיעזר בטלפונים או בעוזרי AI — התשובה תיפסל!</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:1.5rem;" class="reveal">
+            <button class="nav-slide-btn secondary" id="rules-back-btn" onclick="goToSlide(window._rulesReturnSlide||1);">◀ חזרה למשחק</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Lottery Modal -->
+<div id="lottery-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);justify-content:center;align-items:center;">
+    <div style="background:linear-gradient(135deg,#1a1200,#2a1f00);border:2px solid rgba(212,160,23,0.5);border-radius:24px;padding:2.5rem 3rem;max-width:480px;width:90%;text-align:center;position:relative;box-shadow:0 0 60px rgba(212,160,23,0.3);">
+        <button onclick="closeLottery()" style="position:absolute;top:14px;left:16px;background:none;border:none;color:#b8962e;font-size:1.4rem;cursor:pointer;">✕</button>
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;">🎲</div>
+        <h2 style="font-family:'Frank Ruhl Libre',serif;color:#ffd700;font-size:1.8rem;margin-bottom:0.3rem;">הגרלת התחלה</h2>
+        <p style="color:#b8962e;font-size:0.9rem;margin-bottom:1.5rem;">איזו קבוצה מתחילה ראשונה?</p>
+
+        <div id="lottery-display" style="font-size:4rem;min-height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;transition:all 0.2s;">
+            🎲
+        </div>
+        <div id="lottery-result" style="display:none;font-family:'Frank Ruhl Libre',serif;font-size:1.5rem;font-weight:900;color:#6bff6b;text-shadow:0 0 20px rgba(100,255,100,0.5);margin-bottom:1rem;"></div>
+
+        <button onclick="runLottery()" id="lottery-btn" style="background:linear-gradient(135deg,#8b6914,#d4a017);color:#0d0900;padding:12px 36px;border-radius:30px;font-weight:900;font-size:1rem;cursor:pointer;border:none;transition:all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+            🎰 הגרל עכשיו!
+        </button>
+    </div>
+</div>
+
+
+<!-- Rules Button (fixed, top-left) -->
+<button id="rules-btn-global" onclick="openRules()" style="position:fixed;top:14px;left:14px;z-index:200;background:rgba(212,160,23,0.15);border:1.5px solid rgba(212,160,23,0.4);color:#ffd700;border-radius:20px;padding:7px 16px;font-size:0.85rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);transition:all 0.2s;font-family:Heebo,sans-serif;" onmouseover="this.style.background='rgba(212,160,23,0.3)'" onmouseout="this.style.background='rgba(212,160,23,0.15)'">
+    📋 כללי המשחק
+</button>
+
+
+<script>
+// Rules
+var _rulesReturnSlide = 1;
+window._rulesReturnSlide = 1;
+function openRules() {
+    var currentSlide = document.querySelector('.slide.active');
+    var slideNum = currentSlide ? parseInt(currentSlide.getAttribute('data-slide')) : 1;
+    window._rulesReturnSlide = slideNum;
+    goToSlide(46);
+}
+
+// Lottery
+var _lotteryWinner = null;
+function openLottery() {
+    var modal = document.getElementById('lottery-modal');
+    modal.style.display = 'flex';
+    // If there was a previous result, show it
+    if (_lotteryWinner) {
+        document.getElementById('lottery-display').textContent = _lotteryWinner.icon;
+        document.getElementById('lottery-display').style.fontSize = '5rem';
+        document.getElementById('lottery-result').textContent = _lotteryWinner.name + ' מתחילים ראשונים! 🎉';
+        document.getElementById('lottery-result').style.display = 'block';
+    } else {
+        document.getElementById('lottery-result').style.display = 'none';
+        document.getElementById('lottery-display').textContent = '🎲';
+        document.getElementById('lottery-display').style.fontSize = '4rem';
+    }
+    var btn = document.getElementById('lottery-btn');
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.textContent = _lotteryWinner ? '🎰 הגרל שוב!' : '🎰 הגרל עכשיו!';
+}
+function closeLottery() {
+    document.getElementById('lottery-modal').style.display = 'none';
+    updateLotteryIndicator();
+}
+function updateLotteryIndicator() {
+    var el = document.getElementById('lottery-indicator');
+    if (!el) return;
+    if (_lotteryWinner) {
+        el.style.display = 'block';
+        el.innerHTML = '<span style="color:#b8962e;font-size:0.85rem;">🎲 מתחילים ראשונים:</span><br><span style="color:#ffd700;font-weight:900;font-size:1.1rem;">' + _lotteryWinner.icon + ' ' + _lotteryWinner.name + '</span>';
+    } else {
+        el.style.display = 'none';
+    }
+}
+function runLottery() {
+    var btn = document.getElementById('lottery-btn');
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.textContent = '⏳ מגריל...';
+    var display = document.getElementById('lottery-display');
+    var result = document.getElementById('lottery-result');
+    result.style.display = 'none';
+    display.style.fontSize = '4rem';
+
+    var emojis = ['🎲','🎯','⭐','🏆','🎖️','💫','🌟','🎰'];
+    var count = 0;
+    var maxCount = 20;
+    var interval = setInterval(function() {
+        display.textContent = emojis[count % emojis.length];
+        display.style.transform = 'scale(' + (0.8 + Math.random()*0.6) + ') rotate(' + (Math.random()*30-15) + 'deg)';
+        count++;
+        if (count >= maxCount) {
+            clearInterval(interval);
+            display.style.transform = 'scale(1)';
+            // Pick winner
+            var teamAName = document.querySelector('.team-name-a') ? document.querySelector('.team-name-a').textContent.trim() : 'קבוצה א';
+            var teamBName = document.querySelector('.team-name-b') ? document.querySelector('.team-name-b').textContent.trim() : 'קבוצה ב';
+            var teamAIcon = document.getElementById('iconDisplayA') ? document.getElementById('iconDisplayA').textContent.trim() : '🏆';
+            var teamBIcon = document.getElementById('iconDisplayB') ? document.getElementById('iconDisplayB').textContent.trim() : '🎖️';
+            var winner = Math.random() < 0.5 ? 'A' : 'B';
+            var winnerName = winner === 'A' ? teamAName : teamBName;
+            var winnerIcon = winner === 'A' ? teamAIcon : teamBIcon;
+            display.textContent = winnerIcon;
+            display.style.fontSize = '5rem';
+            result.textContent = winnerName + ' מתחילים ראשונים! 🎉';
+            result.style.display = 'block';
+            // Save winner
+            _lotteryWinner = { name: winnerName, icon: winnerIcon };
+            // Update slide-1 indicator
+            updateLotteryIndicator();
+            // Re-enable button
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.textContent = '🎰 הגרל שוב!';
+            // Confetti-like flash
+            display.style.animation = 'heart-beat 0.5s ease-in-out 3';
+            setTimeout(function(){ display.style.animation=''; }, 1500);
+        }
+    }, 80);
+}
+</script>
+</body>
+</html>
