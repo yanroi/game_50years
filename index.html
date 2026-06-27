@@ -75,7 +75,8 @@
         .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
 
         /* ─── GAME BOARD ─── */
-        .game-board { width: 100%; border-collapse: separate; border-spacing: 6px; }
+        .game-board { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 6px; }
+        .game-board th, .game-board td { width: 20%; }
         .cat-header { background: linear-gradient(135deg, #6b4a00, #c8850a, #ffd700); color: #fff;
             font-family:'Frank Ruhl Libre',serif; font-weight:900; font-size:clamp(0.95rem,1.8vw,1.35rem);
             text-align:center; padding: 14px 8px; border-radius: 8px;
@@ -377,15 +378,11 @@
         </div>
         <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
         <div class="answer-card reveal">
-            <div style="font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
-                2024 🎉
+            <div style="font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
+                צולמה בנובמבר 2024 🎉
             </div>
-
-            <div style="font-size:1.3rem;color:#f5e6c8;font-style:italic;font-family:'Frank Ruhl Libre',serif;margin-top:0.8rem;background:rgba(212,160,23,0.1);border-radius:12px;padding:10px 18px;border:1px solid rgba(212,160,23,0.25);">
-                💛 "אין כמו טיול בוקר מפנק בחוף אולגה שימשי ונעים"
-            </div>
-        </div>
-        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
+            <img src="images/photos_100_answer.jpg" alt="תמונות 100 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
+        </div>        <div style="margin-top:1.2rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" class="reveal">
             <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center;">
                 <button onclick="awardAndMark('a')" style="background:rgba(100,200,100,0.15);border:2px solid rgba(100,200,100,0.45);color:#aaffaa;padding:10px 22px;border-radius:24px;cursor:pointer;font-size:1rem;font-weight:800;transition:all 0.2s;" class="award-btn-a">
                     <span class="award-icon-a">🏆</span> <span class="team-name-a">קבוצה א</span> ענתה נכון ✓
@@ -838,7 +835,7 @@
         <div style="font-size:2rem;margin-bottom:0.6rem;" class="reveal">🎉</div>
         <div class="answer-card reveal">
             <div style="font-size:clamp(1.3rem,3vw,2rem);font-weight:900;color:#6bff6b;font-family:'Frank Ruhl Libre',serif;margin-bottom:1rem;text-shadow:0 0 20px rgba(100,255,100,0.4);">
-                ✅ ג. איטליה <span style="font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif;font-style:normal;">🇮🇹</span>
+                ✅ ג. איטליה
             </div>
             <img src="images/trips_200.jpg" alt="טיולים 200 תשובה" style="max-height:55vh;width:auto;max-width:90%;border-radius:14px;margin:0 auto 1rem;display:block;object-fit:contain;box-shadow:0 6px 30px rgba(0,0,0,0.6);">
             <div style="font-size:1.3rem;color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;font-weight:600;line-height:1.8;margin-bottom:0.8rem;text-shadow:0 0 10px rgba(212,160,23,0.3);">
@@ -1711,7 +1708,7 @@
     <div class="content text-center" style="max-width:960px;">
         <div style="font-size:3.4rem;animation:float 3s ease-in-out infinite;margin-bottom:0.35rem;" class="reveal">💍</div>
         <h1 class="reveal glow-pulse" style="font-family:'Frank Ruhl Libre',serif;font-size:clamp(2.2rem,4.8vw,4rem);font-weight:900;background:linear-gradient(135deg,#d4a017,#ffd700,#f5e6c8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.25rem;">
-            מזל טוב מוטי וברכה!
+            מזל טוב מכולנו
         </h1>
         <p class="reveal" style="font-size:clamp(1rem,2vw,1.45rem);color:#f5e6c8;font-family:'Frank Ruhl Libre',serif;margin-bottom:0.65rem;">
             חמישים שנה של אהבה, משפחה וזיכרונות יפים
@@ -1719,16 +1716,17 @@
         <div style="display:flex;gap:16px;justify-content:center;margin:0.3rem auto 0.8rem;flex-wrap:wrap;" class="reveal">
             <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
                 <div style="font-size:1.8rem;">💕</div>
-                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">מוטי</div>
+                <div style="font-size:1.55rem;color:#ffd700;margin-top:6px;font-weight:900;font-family:'Frank Ruhl Libre',serif;">מוטי</div>
             </div>
             <div style="display:flex;align-items:center;font-size:2rem;">❤️</div>
             <div style="text-align:center;background:rgba(212,160,23,0.08);border:1.5px solid rgba(212,160,23,0.25);border-radius:14px;padding:12px 20px;">
                 <div style="font-size:1.8rem;">💕</div>
-                <div style="font-size:0.8rem;color:#b8962e;margin-top:4px;">ברכה</div>
+                <div style="font-size:1.55rem;color:#ffd700;margin-top:6px;font-weight:900;font-family:'Frank Ruhl Libre',serif;">ברכה</div>
             </div>
         </div>
         <div class="reveal" style="background:rgba(212,160,23,0.1);border:2px solid rgba(212,160,23,0.3);border-radius:16px;margin:0.7rem auto;max-width:760px;text-align:right;box-shadow:0 0 28px rgba(212,160,23,0.12);overflow:hidden;">
-            <button id="finalLyricsToggle" onclick="toggleFinalLyrics()" class="nav-slide-btn secondary" style="width:100%;justify-content:center;margin:0;border-radius:0;background:rgba(212,160,23,0.16);border:none;border-bottom:1.5px solid rgba(212,160,23,0.3);" aria-expanded="false">▾ הצג מילים</button>
+            <div style="text-align:center;padding:0.85rem 1.2rem 0.35rem;font-family:'Frank Ruhl Libre',serif;font-size:clamp(1.25rem,2.4vw,1.8rem);font-weight:900;color:#ffd700;text-shadow:0 0 18px rgba(255,215,0,0.35);">חמישים שנה של אהבה</div>
+            <button id="finalLyricsToggle" onclick="toggleFinalLyrics()" class="nav-slide-btn secondary" style="width:100%;justify-content:center;margin:0;border-radius:0;background:rgba(212,160,23,0.16);border:none;border-top:1.5px solid rgba(212,160,23,0.18);border-bottom:1.5px solid rgba(212,160,23,0.3);" aria-expanded="false">▾ הצג מילים</button>
             <div id="finalLyricsBox" style="padding:0 1.4rem;max-height:0px;overflow-y:auto;transition:max-height 0.25s ease,padding 0.25s ease;">
                 <div style="font-family:'Frank Ruhl Libre',serif;color:#fdf6e3;line-height:1.85;font-size:clamp(0.95rem,1.8vw,1.18rem);white-space:pre-line;">
 
@@ -2211,7 +2209,7 @@
                 </div>
                 <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem;">
                     <span style="font-size:1.6rem;flex-shrink:0;">🚫</span>
-                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;"><strong style="color:#ff9999;">אסור</strong> לסבא ולסבתא להשתתף בענייה על השאלות.</p>
+                    <p style="color:#f5e6c8;font-size:clamp(0.9rem,1.8vw,1.05rem);line-height:1.7;margin:0;"><strong style="color:#ff9999;">אסור</strong> לסבא ולסבתא להשתתף במענה על השאלות.</p>
                 </div>
                 <div style="display:flex;align-items:flex-start;gap:14px;">
                     <span style="font-size:1.6rem;flex-shrink:0;">📵</span>
